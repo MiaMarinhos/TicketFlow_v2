@@ -10,6 +10,12 @@ public class Compra {
     private LocalDate fechaCompra;
     private LocalTime horaCompra;
     private String metodoPago;
+    private double montoParcial;
+    private double montoTotal;
+    private int puntosCanjeados;
+    private int descuento;
     private String estado;
 
+    //private Cliente cliente;
+    //private Evento evento;
 }
