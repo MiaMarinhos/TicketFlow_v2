@@ -1,6 +1,7 @@
 package pe.edu.pucp.ticketflow.compra.model;
 
 import pe.edu.pucp.ticketflow.evento.model.Evento;
+import pe.edu.pucp.ticketflow.puntosBonus.model.PuntosBonus;
 import pe.edu.pucp.ticketflow.usuario.model.Cliente;
 
 import java.time.LocalDate;
@@ -14,13 +15,12 @@ public class Compra {
     private String metodoPago;
     private double montoParcial;
     private double montoTotal;
-    private int puntosCanjeados;
-    private int descuento;
     private String estado;
 
+    private PuntosBonus puntosBonus;
     private Cliente cliente;
     private Evento evento;
-    
+
     public int getIdCompra() {
         return idCompra;
     }
@@ -77,28 +77,20 @@ public class Compra {
         this.montoTotal = montoTotal;
     }
 
-    public int getPuntosCanjeados() {
-        return puntosCanjeados;
-    }
-
-    public void setPuntosCanjeados(int puntosCanjeados) {
-        this.puntosCanjeados = puntosCanjeados;
-    }
-
-    public int getDescuento() {
-        return descuento;
-    }
-
-    public void setDescuento(int descuento) {
-        this.descuento = descuento;
-    }
-
     public String getEstado() {
         return estado;
     }
 
     public void setEstado(String estado) {
         this.estado = estado;
+    }
+
+    public PuntosBonus getPuntosBonus() {
+        return puntosBonus;
+    }
+
+    public void setPuntosBonus(PuntosBonus puntosBonus) {
+        this.puntosBonus = puntosBonus;
     }
 
     public Cliente getCliente() {
@@ -121,7 +113,7 @@ public class Compra {
 
     public Compra(int idCompra, int entradasCompradas, LocalDate fechaCompra,
                   LocalTime horaCompra, String metodoPago, double montoParcial,
-                  double montoTotal, int puntosCanjeados, int descuento, String estado,
+                  double montoTotal, String estado, PuntosBonus puntosBonus,
                   Cliente cliente, Evento evento){
         this.idCompra = idCompra;
         this.entradasCompradas = entradasCompradas;
@@ -130,8 +122,7 @@ public class Compra {
         this.metodoPago = metodoPago;
         this.montoParcial = montoParcial;
         this.montoTotal = montoTotal;
-        this.puntosCanjeados = puntosCanjeados;
-        this.descuento = descuento;
+        this.puntosBonus = puntosBonus;
         this.estado = estado;
         this.cliente = cliente;
         this.evento = evento;

@@ -1,4 +1,6 @@
 package pe.edu.pucp.ticketflow;
 
-public interface IEstadoPagosDAO {
+import pe.edu.pucp.ticketflow.base.IBaseDAO;
+
+public interface IEstadoPagosDAO extends IBaseDAO<String, Integer> {
 }

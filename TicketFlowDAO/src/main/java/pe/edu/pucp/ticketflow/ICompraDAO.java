@@ -1,4 +1,7 @@
 package pe.edu.pucp.ticketflow;
 
-public interface ICompraDAO {
+import pe.edu.pucp.ticketflow.base.IBaseDAO;
+import pe.edu.pucp.ticketflow.compra.model.Compra;
+
+public interface ICompraDAO extends IBaseDAO<Compra, Integer> {
 }
