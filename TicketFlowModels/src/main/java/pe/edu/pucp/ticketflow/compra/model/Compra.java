@@ -1,5 +1,7 @@
 package pe.edu.pucp.ticketflow.compra.model;
 
+import pe.edu.pucp.ticketflow.evento.model.Evento;
+import pe.edu.pucp.ticketflow.usuario.model.Cliente;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -16,6 +18,122 @@ public class Compra {
     private int descuento;
     private String estado;
 
-    //private Cliente cliente;
-    //private Evento evento;
+    private Cliente cliente;
+    private Evento evento;
+    
+    public int getIdCompra() {
+        return idCompra;
+    }
+
+    public void setIdCompra(int idCompra) {
+        this.idCompra = idCompra;
+    }
+
+    public int getEntradasCompradas() {
+        return entradasCompradas;
+    }
+
+    public void setEntradasCompradas(int entradasCompradas) {
+        this.entradasCompradas = entradasCompradas;
+    }
+
+    public LocalDate getFechaCompra() {
+        return fechaCompra;
+    }
+
+    public void setFechaCompra(LocalDate fechaCompra) {
+        this.fechaCompra = fechaCompra;
+    }
+
+    public LocalTime getHoraCompra() {
+        return horaCompra;
+    }
+
+    public void setHoraCompra(LocalTime horaCompra) {
+        this.horaCompra = horaCompra;
+    }
+
+    public String getMetodoPago() {
+        return metodoPago;
+    }
+
+    public void setMetodoPago(String metodoPago) {
+        this.metodoPago = metodoPago;
+    }
+
+    public double getMontoParcial() {
+        return montoParcial;
+    }
+
+    public void setMontoParcial(double montoParcial) {
+        this.montoParcial = montoParcial;
+    }
+
+    public double getMontoTotal() {
+        return montoTotal;
+    }
+
+    public void setMontoTotal(double montoTotal) {
+        this.montoTotal = montoTotal;
+    }
+
+    public int getPuntosCanjeados() {
+        return puntosCanjeados;
+    }
+
+    public void setPuntosCanjeados(int puntosCanjeados) {
+        this.puntosCanjeados = puntosCanjeados;
+    }
+
+    public int getDescuento() {
+        return descuento;
+    }
+
+    public void setDescuento(int descuento) {
+        this.descuento = descuento;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
+    public Cliente getCliente() {
+        return cliente;
+    }
+
+    public void setCliente(Cliente cliente) {
+        this.cliente = cliente;
+    }
+
+    public Evento getEvento() {
+        return evento;
+    }
+
+    public void setEvento(Evento evento) {
+        this.evento = evento;
+    }
+
+    public Compra() {}
+
+    public Compra(int idCompra, int entradasCompradas, LocalDate fechaCompra,
+                  LocalTime horaCompra, String metodoPago, double montoParcial,
+                  double montoTotal, int puntosCanjeados, int descuento, String estado,
+                  Cliente cliente, Evento evento){
+        this.idCompra = idCompra;
+        this.entradasCompradas = entradasCompradas;
+        this.fechaCompra = fechaCompra;
+        this.horaCompra = horaCompra;
+        this.metodoPago = metodoPago;
+        this.montoParcial = montoParcial;
+        this.montoTotal = montoTotal;
+        this.puntosCanjeados = puntosCanjeados;
+        this.descuento = descuento;
+        this.estado = estado;
+        this.cliente = cliente;
+        this.evento = evento;
+    }
 }
