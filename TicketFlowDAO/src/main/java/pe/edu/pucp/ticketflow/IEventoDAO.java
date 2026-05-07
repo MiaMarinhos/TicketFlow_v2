@@ -1,4 +1,8 @@
 package pe.edu.pucp.ticketflow;
 
-public interface IEventoDAO {
+import pe.edu.pucp.ticketflow.base.IBaseDAO;
+import pe.edu.pucp.ticketflow.evento.model.Evento;
+
+public interface IEventoDAO extends IBaseDAO<Evento, Integer> {
+
 }
