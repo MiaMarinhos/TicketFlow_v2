@@ -1,4 +1,7 @@
 package pe.edu.pucp.ticketflow;
 
-public interface IRegionDAO {
+import pe.edu.pucp.ticketflow.base.IBaseDAO;
+import pe.edu.pucp.ticketflow.ubicacion.model.Region;
+
+public interface IRegionDAO extends IBaseDAO<Region, Integer> {
 }

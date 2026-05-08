@@ -12,10 +12,10 @@ public class Cliente extends Usuario{
     public Cliente(int idUsuario, String dni, String nombre, String apellidoPaterno,
                    String apellidoMaterno, String telefono, String correoElectronico,
                    String contrasena, Date fechaRegistro, Date fechaNacimiento,
-                   String estado, Distrito distrito, int puntosBonus) {
+                   EstadoUsuario estado, Distrito distrito, int idDistrito, TipoUsuario tipo, int puntosBonus) {
         super(idUsuario, dni, nombre, apellidoPaterno, apellidoMaterno, telefono,
                 correoElectronico, contrasena, fechaRegistro, fechaNacimiento, estado,
-                distrito);
+                distrito, idDistrito, tipo);
         this.puntosBonus = puntosBonus;
     }
 

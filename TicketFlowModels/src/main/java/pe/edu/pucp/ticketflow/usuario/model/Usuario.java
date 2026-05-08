@@ -15,8 +15,13 @@ public abstract class Usuario {
     private String contrasena;
     private Date fechaRegistro;
     private Date fechaNacimiento;
-    private String estado;
+    private EstadoUsuario estado;
     private Distrito distrito;
+    private int idDistrito;
+    private TipoUsuario tipo;
+
+    public int getIdDistrito(){return idDistrito;}
+    public void setIdDistrito(int idDistrito) {}
 
     public Distrito getDistrito() {
         return distrito;
@@ -26,11 +31,11 @@ public abstract class Usuario {
         this.distrito = distrito;
     }
 
-    public String getEstado() {
+    public EstadoUsuario getEstado() {
         return estado;
     }
 
-    public void setEstado(String estado) {
+    public void setEstado(EstadoUsuario estado) {
         this.estado = estado;
     }
 
@@ -114,12 +119,20 @@ public abstract class Usuario {
         this.idUsuario = idUsuario;
     }
 
+    public TipoUsuario getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(TipoUsuario tipo) {
+        this.tipo = tipo;
+    }
+
     public Usuario(){}
 
     public Usuario(int idUsuario, String dni, String nombre, String apellidoPaterno,
                    String apellidoMaterno, String telefono, String correoElectronico,
                    String contrasena, Date fechaRegistro, Date fechaNacimiento,
-                   String estado, Distrito distrito){
+                   EstadoUsuario estado, Distrito distrito, int idDistrito, TipoUsuario tipo){
         this.idUsuario = idUsuario;
         this.dni = dni;
         this.nombre = nombre;
@@ -132,5 +145,21 @@ public abstract class Usuario {
         this.fechaNacimiento = fechaNacimiento;
         this.estado = estado;
         this.distrito = distrito;
+        this.idDistrito = idDistrito;
+        this.tipo = tipo;
+    }
+    public Usuario(int idUsuario, String dni, String nombre, String apellidoPaterno,
+                   String apellidoMaterno, String telefono, String correoElectronico,
+                   String contrasena, Date fechaNacimiento, int idDistrito){
+        this.idUsuario = idUsuario;
+        this.dni = dni;
+        this.nombre = nombre;
+        this.apellidoPaterno = apellidoPaterno;
+        this.apellidoMaterno = apellidoMaterno;
+        this.telefono = telefono;
+        this.correoElectronico = correoElectronico;
+        this.contrasena = contrasena;
+        this.fechaNacimiento = fechaNacimiento;
+        this.idDistrito = idDistrito;
     }
 }

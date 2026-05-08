@@ -3,19 +3,15 @@ package pe.edu.pucp.ticketflow.ubicacion.model;
 public class Distrito {
     private int idDistrito;
     private String nombre;
-    private int idRegion;
+    private Region region;
 
     public Distrito(){
 
     }
-    public Distrito(int idDistrito, String nombre, int idRegion) {
+    public Distrito(int idDistrito, String nombre, Region region) {
         this.idDistrito = idDistrito;
         this.nombre = nombre;
-        this.idRegion = idRegion;
-    }
-    public Distrito(String nombre, int idRegion) {
-        this.nombre = nombre;
-        this.idRegion = idRegion;
+        this.region = region;
     }
 
     public int getIdDistrito() {
@@ -33,11 +29,11 @@ public class Distrito {
         this.nombre = nombre;
     }
 
-    public int getIdRegion() {
-        return idRegion;
+    public Region getRegion() {
+        return region;
     }
 
-    public void setIdRegion(int idRegion) {
-        this.idRegion = idRegion;
+    public void setRegion(Region region) {
+        this.region = region;
     }
 }
