@@ -10,8 +10,8 @@ public class Pago {
     private LocalDate fechaLimitePago;
     private double totalAPagar;
     private String comprobante;
-    private String estado;
 
+    private EstadoPago estado;
     private Evento evento;
 
     public int getIdPago() {
@@ -54,11 +54,11 @@ public class Pago {
         this.comprobante = comprobante;
     }
 
-    public String getEstado() {
+    public EstadoPago getEstado() {
         return estado;
     }
 
-    public void setEstado(String estado) {
+    public void setEstado(EstadoPago estado) {
         this.estado = estado;
     }
 
@@ -73,7 +73,7 @@ public class Pago {
     public Pago() {}
 
     public Pago(int idPago, LocalDate fechaPago, LocalDate fechaLimitePago,
-                double totalAPagar, String comprobante, String estado, Evento evento){
+                double totalAPagar, String comprobante, EstadoPago estado, Evento evento){
         this.idPago = idPago;
         this.fechaPago = fechaPago;
         this.fechaLimitePago = fechaLimitePago;

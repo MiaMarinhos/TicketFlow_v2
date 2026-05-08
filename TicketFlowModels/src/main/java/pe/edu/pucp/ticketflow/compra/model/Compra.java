@@ -15,8 +15,8 @@ public class Compra {
     private String metodoPago;
     private double montoParcial;
     private double montoTotal;
-    private String estado;
 
+    private EstadoCompra estado;
     private PuntosBonus puntosBonus;
     private Cliente cliente;
     private Evento evento;
@@ -77,11 +77,11 @@ public class Compra {
         this.montoTotal = montoTotal;
     }
 
-    public String getEstado() {
+    public EstadoCompra getEstado() {
         return estado;
     }
 
-    public void setEstado(String estado) {
+    public void setEstado(EstadoCompra estado) {
         this.estado = estado;
     }
 
@@ -113,7 +113,7 @@ public class Compra {
 
     public Compra(int idCompra, int entradasCompradas, LocalDate fechaCompra,
                   LocalTime horaCompra, String metodoPago, double montoParcial,
-                  double montoTotal, String estado, PuntosBonus puntosBonus,
+                  double montoTotal, EstadoCompra estado, PuntosBonus puntosBonus,
                   Cliente cliente, Evento evento){
         this.idCompra = idCompra;
         this.entradasCompradas = entradasCompradas;
