@@ -366,7 +366,6 @@ CREATE TABLE IF NOT EXISTS `ticketflow`.`compras` (
   `fecha_compra` DATE NOT NULL,
   `metodo_pago` ENUM('YAPE', 'PLIN') NOT NULL,
   `hora_compra` TIME NOT NULL,
-  `estado` ENUM('EN PROCESO', 'CONFIRMADO') NOT NULL,
   `monto_parcial` DOUBLE NOT NULL,
   `monto_total` DOUBLE NOT NULL,
   `idPuntos_bonus` INT NOT NULL,
