@@ -22,10 +22,13 @@ public class Evento {
     private int idAnfitrion;
     private EstadoPublicacion estadoPublicacion;
     private EstadoEvento estadoEvento;
-
+    private boolean activo;
     public Evento() {
 
     }
+    //Este se usaria si nuestro id se realizara automaticamente
+    //se usaria cuando creamos uno nuevo para agregarlo a la base de datos
+    //Por eso, activo se pone automaticamente como true
     public Evento(String titulo,String descripcion,int capacidad_entradas,
                   categoria_evento categoria, Date fecha,Time hora_inicio,Time hora_fin,
                   String ubicacion,String nombre_establecimiento,String img,double precio,
@@ -45,12 +48,14 @@ public class Evento {
         this.idAnfitrion = idAnfitrion;
         this.estadoPublicacion = estadoPublicacion;
         this.estadoEvento = estadoEvento;
+        this.activo = true;
     }
-
+    //este se usa cuando se lee, por eso pasamos "activo" como parametro
     public Evento(int idEvento,String titulo,String descripcion,int capacidad_entradas,
                   categoria_evento categoria, Date fecha,Time hora_inicio,Time hora_fin,
                   String ubicacion,String nombre_establecimiento,String img,double precio,
-                  Distrito distrito,int idAnfitrion,EstadoPublicacion estadoPublicacion, EstadoEvento estadoEvento) {
+                  Distrito distrito,int idAnfitrion,EstadoPublicacion estadoPublicacion, EstadoEvento estadoEvento,
+                  boolean activo) {
         this.idEvento = idEvento;
         this.titulo = titulo;
         this.descripcion = descripcion;
@@ -67,6 +72,7 @@ public class Evento {
         this.idAnfitrion = idAnfitrion;
         this.estadoPublicacion = estadoPublicacion;
         this.estadoEvento = estadoEvento;
+        this.activo=activo;
     }
 
     public int getIdEvento() {
@@ -195,5 +201,13 @@ public class Evento {
 
     public void setEstadoEvento(EstadoEvento estadoEvento) {
         this.estadoEvento = estadoEvento;
+    }
+
+    public boolean isActivo() {
+        return activo;
+    }
+
+    public void setActivo(boolean activo) {
+        this.activo = activo;
     }
 }
