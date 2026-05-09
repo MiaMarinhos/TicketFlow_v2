@@ -7,4 +7,5 @@ public interface IAdministradorBL {
     void generarReporte();
     void listarUsuarios();
     void listarEventos();
+    void publicarEvento();
 }
