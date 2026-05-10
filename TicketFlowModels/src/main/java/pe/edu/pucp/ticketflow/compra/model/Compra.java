@@ -16,10 +16,47 @@ public class Compra {
     private double montoParcial;
     private double montoTotal;
 
+    private int idEstado;
+    private int idpuntoBonus;
+    private int idCliente;
+    private int idEvento;
+
     private EstadoCompra estado;
     private PuntosBonus puntosBonus;
     private Cliente cliente;
     private Evento evento;
+
+    public int getIdEstado() {
+        return idEstado;
+    }
+
+    public void setIdEstado(int idEstado) {
+        this.idEstado = idEstado;
+    }
+
+    public int getIdpuntoBonus() {
+        return idpuntoBonus;
+    }
+
+    public void setIdpuntoBonus(int idpuntoBonus) {
+        this.idpuntoBonus = idpuntoBonus;
+    }
+
+    public int getIdCliente() {
+        return idCliente;
+    }
+
+    public void setIdCliente(int idCliente) {
+        this.idCliente = idCliente;
+    }
+
+    public int getIdEvento() {
+        return idEvento;
+    }
+
+    public void setIdEvento(int idEvento) {
+        this.idEvento = idEvento;
+    }
 
     public int getIdCompra() {
         return idCompra;

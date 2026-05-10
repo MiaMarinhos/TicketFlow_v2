@@ -116,11 +116,7 @@ public class PagosDAOImpl implements IPagosDAO {
         t.setFechaLimitePago(rs.getDate("fecha_limite_pago").toLocalDate());
         t.setTotalAPagar(rs.getDouble("total_a_pagar"));
         t.setComprobante(rs.getString("comprobante"));
-
-        IEventoDAO eventoDAO = new EventoDAOImpl();
-        t.setEvento(eventoDAO.read(rs.getInt("idEvento")));
-
-        IEstadoPagosDAO estadoPagosDAO = new EstadoPagosDAOImpl();
-        t.setEstado(estadoPagosDAO.read(rs.getInt("idEstado")));
+        t.setIdEvento(rs.getInt("idEvento"));
+        t.setIdEstado(rs.getInt("idEstado"));
     }
 }

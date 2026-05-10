@@ -2,8 +2,11 @@ package pe.edu.pucp.ticketflow.impl;
 
 import pe.edu.pucp.ticketflow.*;
 import pe.edu.pucp.ticketflow.compra.model.Compra;
+import pe.edu.pucp.ticketflow.compra.model.EstadoCompra;
 import pe.edu.pucp.ticketflow.dao.manager.DBManager;
+import pe.edu.pucp.ticketflow.evento.model.Evento;
 import pe.edu.pucp.ticketflow.puntosBonus.model.PuntosBonus;
+import pe.edu.pucp.ticketflow.usuario.model.Cliente;
 
 import java.sql.*;
 import java.time.LocalDate;
@@ -127,17 +130,9 @@ public class CompraDAOImpl implements ICompraDAO{
         t.setHoraCompra(rs.getTime("hora_compra").toLocalTime());
         t.setMontoParcial(rs.getDouble("monto_parcial"));
         t.setMontoTotal(rs.getDouble("monto_total"));
-
-        IPuntosBonusDAO puntosBonusDAO = new PuntosBonusDAOImpl();
-        t.setPuntosBonus(puntosBonusDAO.read(rs.getInt("idPuntos_bonus")));
-
-        IClienteDAO clienteDAO = new ClienteDAOImpl();
-        t.setCliente(clienteDAO.read(rs.getInt("idCliente")));
-
-        IEventoDAO eventoDAO = new EventoDAOImpl();
-        t.setEvento(eventoDAO.read(rs.getInt("idEvento")));
-
-        IEstadoComprasDAO estadoComprasDAO = new EstadoComprasDAOImpl();
-        t.setEstado(estadoComprasDAO.read(rs.getInt("idEstado")));
+        t.setIdpuntoBonus(rs.getInt("idPuntos_bonus"));
+        t.setIdCliente(rs.getInt("idCliente"));
+        t.setIdEvento(rs.getInt("idEvento"));
+        t.setIdEstado(rs.getInt("idEstado"));
     }
 }

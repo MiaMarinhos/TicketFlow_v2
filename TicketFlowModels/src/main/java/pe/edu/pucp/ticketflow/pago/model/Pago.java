@@ -11,8 +11,28 @@ public class Pago {
     private double totalAPagar;
     private String comprobante;
 
+    private int idEstado;
+    private int idEvento;
+
     private EstadoPago estado;
     private Evento evento;
+
+
+    public int getIdEstado() {
+        return idEstado;
+    }
+
+    public void setIdEstado(int idEstado) {
+        this.idEstado = idEstado;
+    }
+
+    public int getIdEvento() {
+        return idEvento;
+    }
+
+    public void setIdEvento(int idEvento) {
+        this.idEvento = idEvento;
+    }
 
     public int getIdPago() {
         return idPago;
