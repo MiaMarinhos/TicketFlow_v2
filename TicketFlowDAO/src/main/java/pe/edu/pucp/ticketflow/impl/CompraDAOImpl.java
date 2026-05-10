@@ -1,27 +1,37 @@
 package pe.edu.pucp.ticketflow.impl;
 
-import pe.edu.pucp.ticketflow.ICompraDAO;
+import pe.edu.pucp.ticketflow.*;
 import pe.edu.pucp.ticketflow.compra.model.Compra;
 import pe.edu.pucp.ticketflow.dao.manager.DBManager;
+import pe.edu.pucp.ticketflow.puntosBonus.model.PuntosBonus;
 
 import java.sql.*;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
 public class CompraDAOImpl implements ICompraDAO{
     @Override
     public Compra create(Compra t){
-        String sql = "{CALL <nombreProcedure>(?,...)}";
+        String sql = "{CALL sp_create_compras(?,?,?,?,?,?,?,?,?,?,?)}";
 
         try(Connection con = DBManager.getInstance().getConnection();
             CallableStatement cs = con.prepareCall(sql)){
 
-            //cs.registerOutParameter(1, Types.INTEGER); //SI ES AUTO_INCREMENT
-
-            //TODO
+            cs.setInt(1,t.getIdCompra());
+            cs.setInt(2,t.getEntradasCompradas());
+            cs.setDate(3,Date.valueOf(t.getFechaCompra()));
+            cs.setString(4,t.getMetodoPago());
+            cs.setTime(5,Time.valueOf(t.getHoraCompra()));
+            cs.setDouble(6,t.getMontoParcial());
+            cs.setDouble(7,t.getMontoTotal());
+            cs.setInt(8,t.getPuntosBonus().getIdPuntosBonus());
+            cs.setInt(9,t.getCliente().getIdUsuario());
+            cs.setInt(10,t.getEvento().getIdEvento());
+            cs.setInt(11,t.getEstado().getIdEstadoCompra());
 
             cs.execute();
-            //t.setIdCompra(cs.getInt(1));
             return t;
         }
         catch (SQLException e){
@@ -30,7 +40,7 @@ public class CompraDAOImpl implements ICompraDAO{
     }
     @Override
     public Compra read(Integer id){
-        String sql = "{CALL <nombreProcedure>(?,...)}";
+        String sql = "{CALL sp_read_compras(?)}";
 
         try(Connection con = DBManager.getInstance().getConnection();
             CallableStatement cs = con.prepareCall(sql)){
@@ -51,13 +61,22 @@ public class CompraDAOImpl implements ICompraDAO{
     }
     @Override
     public Compra update(Compra t, Integer id) {
-        String sql = "{CALL <nombreProcedure>(?,...)}";
+        String sql = "{CALL sp_update_compras(?,?,?,?,?,?,?,?,?,?,?)}";
 
         try(Connection con = DBManager.getInstance().getConnection();
             CallableStatement cs = con.prepareCall(sql)){
 
             cs.setInt(1, id);
-            //TODO
+            cs.setInt(2,t.getEntradasCompradas());
+            cs.setDate(3,Date.valueOf(t.getFechaCompra()));
+            cs.setString(4,t.getMetodoPago());
+            cs.setTime(5,Time.valueOf(t.getHoraCompra()));
+            cs.setDouble(6,t.getMontoParcial());
+            cs.setDouble(7,t.getMontoTotal());
+            cs.setInt(8,t.getPuntosBonus().getIdPuntosBonus());
+            cs.setInt(9,t.getCliente().getIdUsuario());
+            cs.setInt(10,t.getEvento().getIdEvento());
+            cs.setInt(11,t.getEstado().getIdEstadoCompra());
 
             cs.execute();
             return t;
@@ -68,7 +87,7 @@ public class CompraDAOImpl implements ICompraDAO{
     }
     @Override
     public void delete(Integer id){
-        String sql = "{CALL <nombreProcedure>(?)}";
+        String sql = "{CALL sp_delete_compras(?)}";
 
         try (Connection con = DBManager.getInstance().getConnection();
              CallableStatement cs = con.prepareCall(sql)) {
@@ -83,7 +102,7 @@ public class CompraDAOImpl implements ICompraDAO{
     @Override
     public List<Compra> listAll(){
         List<Compra> lista = new ArrayList<>();
-        String sql = "{CALL <nombreProcedure>()}";
+        String sql = "{CALL sp_listAll_compras()}";
         try (Connection con = DBManager.getInstance().getConnection();
              CallableStatement cs = con.prepareCall(sql);
              ResultSet rs = cs.executeQuery()) {
@@ -100,9 +119,25 @@ public class CompraDAOImpl implements ICompraDAO{
         }
     }
 
-    private void mapear(ResultSet rs, Compra t){
-        //TODO
-        //Ejemplo: u.setIdUsuario(rs.getInt("idUsuario"));
+    private void mapear(ResultSet rs, Compra t) throws SQLException{
+        t.setIdCompra(rs.getInt("idCompras"));
+        t.setEntradasCompradas(rs.getInt("entradas_compradas"));
+        t.setFechaCompra(rs.getDate("fecha_compra").toLocalDate());
+        t.setMetodoPago(rs.getString("metodo_pago"));
+        t.setHoraCompra(rs.getTime("hora_compra").toLocalTime());
+        t.setMontoParcial(rs.getDouble("monto_parcial"));
+        t.setMontoTotal(rs.getDouble("monto_total"));
 
+        IPuntosBonusDAO puntosBonusDAO = new PuntosBonusDAOImpl();
+        t.setPuntosBonus(puntosBonusDAO.read(rs.getInt("idPuntos_bonus")));
+
+        IClienteDAO clienteDAO = new ClienteDAOImpl();
+        t.setCliente(clienteDAO.read(rs.getInt("idCliente")));
+
+        IEventoDAO eventoDAO = new EventoDAOImpl();
+        t.setEvento(eventoDAO.read(rs.getInt("idEvento")));
+
+        IEstadoComprasDAO estadoComprasDAO = new EstadoComprasDAOImpl();
+        t.setEstado(estadoComprasDAO.read(rs.getInt("idEstado")));
     }
 }

@@ -4,7 +4,7 @@
 
 --Create
 DELIMITER $$
-CREATE PROCEDURE sp_puntos_bonus_insert (
+CREATE PROCEDURE sp_create_puntos_bonus (
     OUT p_id INT,
     IN p_puntos_canjeables INT,
     IN p_descuento INT
@@ -22,7 +22,7 @@ DELIMITER ;
 
 --Read
 DELIMITER $$
-CREATE PROCEDURE sp_puntos_bonus_findById (
+CREATE PROCEDURE sp_read_puntos_bonus (
     IN p_idPuntos_bonus INT
 )
 BEGIN
@@ -35,7 +35,7 @@ DELIMITER ;
 
 --Update
 DELIMITER $$
-CREATE PROCEDURE sp_puntos_bonus_update (
+CREATE PROCEDURE sp_update_puntos_bonus (
     IN p_idPuntos_bonus INT,
     IN p_puntos_canjeables INT,
     IN p_descuento INT
@@ -51,7 +51,7 @@ DELIMITER ;
 
 --Delete
 DELIMITER $$
-CREATE PROCEDURE sp_puntos_bonus_delete (
+CREATE PROCEDURE sp_delete_puntos_bonus (
     IN p_idPuntos_bonus INT
 )
 BEGIN
@@ -62,7 +62,7 @@ DELIMITER ;
 
 --ListAll
 DELIMITER $$
-CREATE PROCEDURE sp_puntos_bonus_listAll ()
+CREATE PROCEDURE sp_listAll_puntos_bonus ()
 BEGIN
 SELECT
     idPuntos_bonus, puntos_canjeables, descuento
