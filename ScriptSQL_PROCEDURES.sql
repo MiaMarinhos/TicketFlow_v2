@@ -278,4 +278,168 @@ END //
 
 DELIMITER ;
 
+-- -----------------------------------------------------
+-- PROCEDURES PARA CAPA DE EVENTO
+-- -----------------------------------------------------
+
+CREATE PROCEDURE SP_INSERTAR_EVENTO (OUT p_id_Evento INT, IN p_titulo VARCHAR(100),
+                                     IN p_descripcion VARCHAR(250), IN p_capacidad_entradas INT , IN p_fecha DATE,
+                                     IN p_hora_inicio TIME, IN p_hora_fin TIME, IN p_ubicacion VARCHAR(100),
+                                     IN p_nombre_establecimiento VARCHAR(45), IN p_img VARCHAR(450), IN p_precio DOUBLE,
+                                     IN p_idDistrito INT, IN p_idAnfitrion INT, IN p_idCategoria_evento INT,
+                                     IN p_idEstado_publicacion INT, IN p_idEstado_evento INT)
+BEGIN
+INSERT INTO evento (titulo, descripcion, capacidad_entradas, fecha, hora_inicio, hora_fin,
+                    ubicacion, nombre_establecimiento, img, precio, idDistrito, idAnfitrion, idCategoria_evento, idEstado_publicacion,
+                    idEstado_evento,estado)
+VALUES(p_titulo , p_descripcion, p_capacidad_entradas , p_fecha,
+       p_hora_inicio, p_hora_fin, p_ubicacion,
+       p_nombre_establecimiento, p_img, p_precio,
+       p_idDistrito, p_idAnfitrion, p_idCategoria_evento,
+       p_idEstado_publicacion, p_idEstado_evento)
+
+    SET p_id_Evento = LAST_INSERT_ID();
+END //
+
+CREATE PROCEDURE SP_LEER_EVENTO (IN p_id_Evento INT)
+BEGIN
+SELECT
+    e.idEvento,
+    e.titulo,
+    e.descripcion,
+    e.capacidad_entradas,
+    e.fecha,
+    e.hora_inicio,
+    e.hora_fin,
+    e.ubicacion,
+    e.nombre_establecimiento,
+    e.img,
+    e.precio,
+    e.idAnfitrion,
+
+    c.idCategoria_evento,
+    c.nombre AS categoria_nombre,
+    c.dias_para_publicacion,
+
+    ep.idEstado_publicacion,
+    ep.estado AS estado_publicacion,
+
+    ee.idEstado_evento,
+    ee.estado AS estado_evento,
+
+    d.idDistrito,
+    d.nombre AS distrito_nombre,
+
+    r.idRegion,
+    r.nombre AS region_nombre
+
+FROM evento e
+         JOIN mydb.categoria_evento c
+              ON e.idCategoria_evento = c.idCategoria_evento
+         JOIN mydb.estado_publicacion ep
+              ON e.idEstado_publicacion = ep.idEstado_publicacion
+         JOIN mydb.estado_evento ee
+              ON e.idEstado_evento = ee.idEstado_evento
+         JOIN distrito d
+              ON e.idDistrito = d.idDistrito
+         JOIN region r
+              ON d.idRegion = r.idRegion
+WHERE e.idEvento = p_id_evento;
+
+END //
+
+CREATE PROCEDURE SP_ACTUALIZAR_EVENTO(
+    IN p_idEvento INT,
+    IN p_titulo VARCHAR(100),
+    IN p_descripcion VARCHAR(250),
+    IN p_capacidad_entradas INT,
+    IN p_fecha DATE,
+    IN p_hora_inicio TIME,
+    IN p_hora_fin TIME,
+    IN p_ubicacion VARCHAR(100),
+    IN p_nombre_establecimiento VARCHAR(45),
+    IN p_img VARCHAR(450),
+    IN p_precio DOUBLE,
+    IN p_idDistrito INT,
+    IN p_idAnfitrion INT,
+    IN p_idCategoria_evento INT,
+    IN p_idEstado_publicacion INT,
+    IN p_idEstado_evento INT,
+    IN p_activo BOOLEAN
+)
+BEGIN
+UPDATE evento
+SET
+    titulo = p_titulo,
+    descripcion = p_descripcion,
+    capacidad_entradas = p_capacidad_entradas,
+    fecha = p_fecha,
+    hora_inicio = p_hora_inicio,
+    hora_fin = p_hora_fin,
+    ubicacion = p_ubicacion,
+    nombre_establecimiento = p_nombre_establecimiento,
+    img = p_img,
+    precio = p_precio,
+    idDistrito = p_idDistrito,
+    idAnfitrion = p_idAnfitrion,
+    idCategoria_evento = p_idCategoria_evento,
+    idEstado_publicacion = p_idEstado_publicacion,
+    idEstado_evento = p_idEstado_evento,
+    activo = p_activo
+WHERE idEvento = p_idEvento;
+END //
+
+CREATE PROCEDURE SP_ELIMINAR_EVENTO(IN p_idEvento INT)
+BEGIN
+DELETE FROM evento WHERE idEvento = p_idDistrito;
+END //
+
+CREATE PROCEDURE SP_LISTAR_EVENTOS()
+BEGIN
+SELECT
+    e.idEvento,
+    e.titulo,
+    e.descripcion,
+    e.capacidad_entradas,
+    e.fecha,
+    e.hora_inicio,
+    e.hora_fin,
+    e.ubicacion,
+    e.nombre_establecimiento,
+    e.img,
+    e.precio,
+    e.idAnfitrion,
+    e.activo,
+
+    c.idCategoria_evento,
+    c.nombre AS categoria_nombre,
+    c.dias_para_publicacion,
+
+    ep.idEstado_publicacion,
+    ep.estado AS estado_publicacion,
+
+    ee.idEstado_evento,
+    ee.estado AS estado_evento,
+
+    d.idDistrito,
+    d.nombre AS distrito_nombre,
+
+    r.idRegion,
+    r.nombre AS region_nombre
+
+FROM evento e
+         JOIN mydb.categoria_evento c
+              ON e.idCategoria_evento = c.idCategoria_evento
+         JOIN mydb.estado_publicacion ep
+              ON e.idEstado_publicacion = ep.idEstado_publicacion
+         JOIN mydb.estado_evento ee
+              ON e.idEstado_evento = ee.idEstado_evento
+         JOIN distrito d
+              ON e.idDistrito = d.idDistrito
+         JOIN region r
+              ON d.idRegion = r.idRegion;
+ORDER BY idEvento
+END
+
+
 

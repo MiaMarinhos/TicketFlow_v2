@@ -7,6 +7,7 @@ import pe.edu.pucp.ticketflow.evento.model.Evento;
 import pe.edu.pucp.ticketflow.dao.manager.DBManager;
 import pe.edu.pucp.ticketflow.evento.model.categoria_evento;
 import pe.edu.pucp.ticketflow.ubicacion.model.Distrito;
+import pe.edu.pucp.ticketflow.ubicacion.model.Region;
 
 import java.sql.*;
 
@@ -15,46 +16,35 @@ import java.util.List;
 
 public class EventoDAOImpl implements IEventoDAO {
     @Override
-    public Integer create(Evento eve){
+    public Evento create(Evento eve){
         // INSERT
-        String sql = "insert into Evento (idEvento ,titulo, descripcion, capacidad_entradas, fecha, hora_inicio, hora_fin," +
-                "ubicacion, nombre_establecimiento, img, precio, idDistrito, idAnfitrion, idCategoria_evento, idEstado_publicacion," +
-                "idEstado_evento,estado) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+        String sql = "{CALL SP_INSERTAR_EVENTO (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
         try(Connection connection = DBManager.getInstance().getConnection();
-            PreparedStatement pstmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            pstmt.setInt(1, eve.getIdEvento());
-            pstmt.setString(2, eve.getTitulo());
-            pstmt.setString(3, eve.getDescripcion());
-            pstmt.setInt(4, eve.getCapacidad_entradas());
-            pstmt.setDate(5, (Date) eve.getFecha());
-            pstmt.setTime(6, eve.getHora_inicio());
-            pstmt.setTime(7, eve.getHora_fin());
-            pstmt.setString(8, eve.getUbicacion());
-            pstmt.setString(9, eve.getNombre_establecimiento());
-            pstmt.setString(10, eve.getImg());
-            pstmt.setDouble(11, eve.getPrecio());
-            pstmt.setInt(12, eve.getDistrito().getIdDistrito());
-            pstmt.setInt(13, eve.getIdAnfitrion());
-            pstmt.setInt(14, eve.getCategoria().getIdCategoria_evento());
-            pstmt.setInt(15, eve.getEstadoPublicacion().getIdEstado_publicacion());
-            pstmt.setInt(16, eve.getEstadoEvento().getIdEstado_evento());
-            pstmt.setBoolean(17, eve.isActivo()); //aunque en teoria seria siempre true podria hardcodearlo de frente
 
-            /*
-            int affectedRows = pstmt.executeUpdate();
+            CallableStatement cs = connection.prepareCall(sql)) {
+            cs.registerOutParameter(1, Types.INTEGER);
 
-             Esto solo funcionara si en el sql el id esta definido como AUTO_INCREMENT :(
+            cs.setString(2, eve.getTitulo());
+            cs.setString(3, eve.getDescripcion());
+            cs.setInt(4, eve.getCapacidad_entradas());
+            cs.setDate(5, (Date) eve.getFecha());
+            cs.setTime(6, eve.getHora_inicio());
+            cs.setTime(7, eve.getHora_fin());
+            cs.setString(8, eve.getUbicacion());
+            cs.setString(9, eve.getNombre_establecimiento());
+            cs.setString(10, eve.getImg());
+            cs.setDouble(11, eve.getPrecio());
+            cs.setInt(12, eve.getDistrito().getIdDistrito());
+            cs.setInt(13, eve.getIdAnfitrion());
+            cs.setInt(14, eve.getCategoria().getIdCategoria_evento());
+            cs.setInt(15, eve.getEstadoPublicacion().getIdEstado_publicacion());
+            cs.setInt(16, eve.getEstadoEvento().getIdEstado_evento());
+            cs.setBoolean(17, eve.isActivo()); //aunque en teoria seria siempre true podria hardcodearlo de frente
 
-            if (affectedRows > 0) {
-                 try (ResultSet generatedKeys = pstmt.getGeneratedKeys()) {
-                    if (generatedKeys.next()) {
-                        int newId = generatedKeys.getInt(1);
-                        eve.setIdEvento(newId);
-                    }
-                }
-            }
-            */
-            return eve.getIdEvento();
+            cs.execute();
+            eve.setIdEvento(cs.getInt(1));
+
+            return eve;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -64,90 +54,58 @@ public class EventoDAOImpl implements IEventoDAO {
     public Evento read(Integer id) {
 // SELECT por ID
         String sql =
-                "SELECT " +
-                        "e.idEvento, e.titulo, e.descripcion, e.capacidad_entradas, " +
-                        "e.fecha, e.hora_inicio, e.hora_fin, e.ubicacion, " +
-                        "e.nombre_establecimiento, e.img, e.precio, e.idAnfitrion," +
-
-                        "c.idCategoria_evento, c.nombre, c.dias_para_publicacion, " +
-
-                        "d.idDistrito, d.nombre, d.idRegion, " +
-
-                        "ep.idEstado_publicacion, ep.estado, " +
-
-                        "ee.idEstado_evento, ee.estado,  e.activo " +
-
-                        "FROM evento e " +
-
-                        "INNER JOIN categoria_evento c " +
-                        "ON e.idCategoria_evento = c.idCategoria_evento " +
-
-                        "INNER JOIN distrito d " +
-                        "ON e.idDistrito = d.idDistrito " +
-
-                        "INNER JOIN estado_publicacion ep " +
-                        "ON e.idEstado_publicacion = ep.idEstado_publicacion " +
-
-                        "INNER JOIN estado_evento ee " +
-                        "ON e.idEstado_evento = ee.idEstado_evento " +
-
-                        "WHERE e.idEvento = ?";
+                "SELECT {CALL SP_LEER_EVENTO(?)}";
 
         try (Connection connection = DBManager.getInstance().getConnection();
-             PreparedStatement pstmt = connection.prepareStatement(sql)) {
+             CallableStatement cs = connection.prepareCall(sql)) {
 
-            pstmt.setInt(1, id);
+            cs.setInt(1, id);
 
-            try (ResultSet rs = pstmt.executeQuery()) {
+            try (ResultSet rs = cs.executeQuery()) {
 
                 if (rs.next()) {
 
-                    categoria_evento categoria =
-                            new categoria_evento(
-                                    rs.getInt(13),
-                                    rs.getString(14),
-                                    rs.getInt(15)
-                            );
+                    Evento evento = new Evento();
 
-                    Distrito distrito =
-                            new Distrito(
-                                    rs.getInt(16),
-                                    rs.getString(17),
-                                    rs.getInt(18)
-                            );
+                    evento.setIdEvento(rs.getInt("idEvento"));
+                    evento.setTitulo(rs.getString("titulo"));
+                    evento.setDescripcion(rs.getString("descripcion"));
+                    evento.setCapacidad_entradas(rs.getInt("capacidad_entradas"));
+                    evento.setFecha(rs.getDate("fecha"));
+                    evento.setHora_inicio(rs.getTime("hora_inicio"));
+                    evento.setHora_fin(rs.getTime("hora_fin"));
+                    evento.setUbicacion(rs.getString("ubicacion"));
+                    evento.setNombre_establecimiento(rs.getString("nombre_establecimiento"));
+                    evento.setImg(rs.getString("img"));
+                    evento.setPrecio(rs.getDouble("precio"));
+                    evento.setIdAnfitrion(rs.getInt("idAnfitrion"));
 
-                    EstadoPublicacion estadoPublicacion =
-                            new EstadoPublicacion(
-                                    rs.getInt(19),
-                                    rs.getString(20)
-                            );
+                    categoria_evento cat = new categoria_evento();
+                    cat.setIdCategoria_evento(rs.getInt("idCategoria_evento"));
+                    cat.setNombre(rs.getString("categoria_nombre"));
+                    cat.setDias_para_publicacion(rs.getInt("dias_para_publicacion"));
+                    evento.setCategoria(cat);
 
-                    EstadoEvento estadoEvento =
-                            new EstadoEvento(
-                                    rs.getInt(21),
-                                    rs.getString(22)
-                            );
+                    EstadoPublicacion ep = new EstadoPublicacion();
+                    ep.setIdEstado_publicacion(rs.getInt("idEstado_publicacion"));
+                    ep.setEstado(rs.getString("estado_publicacion"));
+                    evento.setEstadoPublicacion(ep);
 
-                    Evento evento =
-                            new Evento(
-                                    rs.getInt(1),
-                                    rs.getString(2),
-                                    rs.getString(3),
-                                    rs.getInt(4),
-                                    categoria,
-                                    rs.getDate(5),
-                                    rs.getTime(6),
-                                    rs.getTime(7),
-                                    rs.getString(8),
-                                    rs.getString(9),
-                                    rs.getString(10),
-                                    rs.getDouble(11),
-                                    distrito,
-                                    rs.getInt(12),
-                                    estadoPublicacion,
-                                    estadoEvento,
-                                    rs.getBoolean(23)
-                            );
+                    EstadoEvento ee = new EstadoEvento();
+                    ee.setIdEstado_evento(rs.getInt("idEstado_evento"));
+                    ee.setEstado(rs.getString("estado_evento"));
+                    evento.setEstadoEvento(ee);
+
+                    Region region = new Region();
+                    region.setIdRegion(rs.getInt("idRegion"));
+                    region.setNombre(rs.getString("region_nombre"));
+
+                    Distrito distrito = new Distrito();
+                    distrito.setIdDistrito(rs.getInt("idDistrito"));
+                    distrito.setNombre(rs.getString("distrito_nombre"));
+                    distrito.setRegion(region);
+
+                    evento.setDistrito(distrito);
 
                     return evento;
                 }
@@ -161,88 +119,52 @@ public class EventoDAOImpl implements IEventoDAO {
     }
 
     @Override
-    public boolean update(Evento evento, Integer id){
+    public Evento update(Evento evento, Integer id){
         // UPDATE
         String sql =
-                "update evento set " +
-                        "titulo = ?, " +
-                        "descripcion = ?, " +
-                        "capacidad_entradas = ?, " +
-                        "fecha = ?, " +
-                        "hora_inicio = ?, " +
-                        "hora_fin = ?, " +
-                        "ubicacion = ?, " +
-                        "nombre_establecimiento = ?, " +
-                        "img = ?, " +
-                        "precio = ?, " +
-                        "idDistrito = ?, " +
-                        "idAnfitrion = ?, " +
-                        "idCategoria_evento = ?, " +
-                        "idEstado_publicacion = ?, " +
-                        "idEstado_evento = ? " +
-                        "activo = ? " +
-                        "where idEvento = ?";
+                "{CALL SP_ACTUALIZAR_EVENTO(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
         try(Connection connection = DBManager.getInstance().getConnection();
-            PreparedStatement pstmt = connection.prepareStatement(sql)) {
-            pstmt.setString(1, evento.getTitulo());
-            pstmt.setString(2, evento.getDescripcion());
-            pstmt.setInt(3, evento.getCapacidad_entradas());
-            pstmt.setDate(4, (Date) evento.getFecha());
-            pstmt.setTime(5, evento.getHora_inicio());
-            pstmt.setTime(6, evento.getHora_fin());
-            pstmt.setString(7, evento.getUbicacion());
-            pstmt.setString(8, evento.getNombre_establecimiento());
-            pstmt.setString(9, evento.getImg());
-            pstmt.setDouble(10, evento.getPrecio());
+            CallableStatement cs = connection.prepareCall(sql)) {
 
-            pstmt.setInt(
-                    11,
-                    evento.getDistrito().getIdDistrito()
-            );
+            cs.setInt(1, evento.getIdEvento());
+            cs.setString(2, evento.getTitulo());
+            cs.setString(3, evento.getDescripcion());
+            cs.setInt(4, evento.getCapacidad_entradas());
+            cs.setDate(5, (Date) evento.getFecha());
+            cs.setTime(6, evento.getHora_inicio());
+            cs.setTime(7, evento.getHora_fin());
+            cs.setString(8, evento.getUbicacion());
+            cs.setString(9, evento.getNombre_establecimiento());
+            cs.setString(10, evento.getImg());
+            cs.setDouble(11, evento.getPrecio());
 
-            pstmt.setInt(12, evento.getIdAnfitrion());
+            cs.setInt(12, evento.getDistrito().getIdDistrito());
+            cs.setInt(13, evento.getIdAnfitrion());
+            cs.setInt(14, evento.getCategoria().getIdCategoria_evento());
+            cs.setInt(15, evento.getEstadoPublicacion().getIdEstado_publicacion());
+            cs.setInt(16, evento.getEstadoEvento().getIdEstado_evento());
 
-            pstmt.setInt(
-                    13,
-                    evento.getCategoria().getIdCategoria_evento()
-            );
+            cs.setBoolean(17, evento.isActivo());
 
-            pstmt.setInt(
-                    14,
-                    evento.getEstadoPublicacion().getIdEstado_publicacion()
-            );
+            int filas = cs.executeUpdate();
 
-            pstmt.setInt(
-                    15,
-                    evento.getEstadoEvento().getIdEstado_evento()
-            );
-
-            pstmt.setBoolean(16, evento.isActivo());
-
-            pstmt.setInt(17, evento.getIdEvento());
-
-
-            pstmt.executeUpdate();
-            return true;
+            return evento;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
     @Override
-    public boolean delete(Integer id){
+    public void delete(Integer id){
         // UPDATE estado = false
         String sql =
-                "update evento set " +
-                        "activo = ? " +
-                        "where idEvento = ?";
+                "{CALL SP_ELIMINAR_EVENTO(?)}}";
         try(Connection connection = DBManager.getInstance().getConnection();
-            PreparedStatement pstmt = connection.prepareStatement(sql)) {
-            pstmt.setBoolean(1, false);
+            CallableStatement cs = connection.prepareCall(sql)) {
+            cs.setInt(1,id);
 
-            pstmt.executeUpdate();
+            cs.executeUpdate();
 
-            return true;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -251,96 +173,78 @@ public class EventoDAOImpl implements IEventoDAO {
     @Override
     public List<Evento> listAll(){
         //SELECT *
-        String sql =
-                "SELECT " +
-                        "e.idEvento, e.titulo, e.descripcion, e.capacidad_entradas, " +
-                        "e.fecha, e.hora_inicio, e.hora_fin, e.ubicacion, " +
-                        "e.nombre_establecimiento, e.img, e.precio, e.idAnfitrion," +
+        String sql ="SELECT {CALL SP_LISTAR_EVENTO()}";
 
-                        "c.idCategoria_evento, c.nombre, c.dias_para_publicacion, " +
-
-                        "d.idDistrito, d.nombre, d.idRegion, " +
-
-                        "ep.idEstado_publicacion, ep.estado, " +
-
-                        "ee.idEstado_evento, ee.estado,  e.activo " +
-
-                        "FROM evento e " +
-
-                        "INNER JOIN categoria_evento c " +
-                        "ON e.idCategoria_evento = c.idCategoria_evento " +
-
-                        "INNER JOIN distrito d " +
-                        "ON e.idDistrito = d.idDistrito " +
-
-                        "INNER JOIN estado_publicacion ep " +
-                        "ON e.idEstado_publicacion = ep.idEstado_publicacion " +
-
-                        "INNER JOIN estado_evento ee " +
-                        "ON e.idEstado_evento = ee.idEstado_evento " +
-
-                        "ORDER BY e.idEvento";
 
         try (Connection connection = DBManager.getInstance().getConnection();
-             PreparedStatement pstmt = connection.prepareStatement(sql)) {
+             CallableStatement cs = connection.prepareCall(sql)) {
 
-            List<Evento> eventos = new ArrayList<>();
-
-            try (ResultSet rs = pstmt.executeQuery()) {
+            try (ResultSet rs = cs.executeQuery()) {
+                List<Evento> eventos = new ArrayList<>();
 
                 while (rs.next()) {
 
-                    categoria_evento categoria =
-                            new categoria_evento(
-                                    rs.getInt(13),
-                                    rs.getString(14),
-                                    rs.getInt(15)
-                            );
+                    Evento evento = new Evento();
 
-                    Distrito distrito =
-                            new Distrito(
-                                    rs.getInt(16),
-                                    rs.getString(17),
-                                    rs.getInt(18)
-                            );
+                    evento.setIdEvento(rs.getInt("idEvento"));
+                    evento.setTitulo(rs.getString("titulo"));
+                    evento.setDescripcion(rs.getString("descripcion"));
+                    evento.setCapacidad_entradas(rs.getInt("capacidad_entradas"));
+                    evento.setFecha(rs.getDate("fecha"));
+                    evento.setHora_inicio(rs.getTime("hora_inicio"));
+                    evento.setHora_fin(rs.getTime("hora_fin"));
+                    evento.setUbicacion(rs.getString("ubicacion"));
+                    evento.setNombre_establecimiento(
+                            rs.getString("nombre_establecimiento")
+                    );
+                    evento.setImg(rs.getString("img"));
+                    evento.setPrecio(rs.getDouble("precio"));
+                    evento.setIdAnfitrion(rs.getInt("idAnfitrion"));
+                    evento.setActivo(rs.getBoolean("activo"));
 
-                    EstadoPublicacion estadoPublicacion =
-                            new EstadoPublicacion(
-                                    rs.getInt(19),
-                                    rs.getString(20)
-                            );
+                    categoria_evento cat = new categoria_evento();
+                    cat.setIdCategoria_evento(
+                            rs.getInt("idCategoria_evento")
+                    );
+                    cat.setNombre(rs.getString("categoria_nombre"));
+                    cat.setDias_para_publicacion(
+                            rs.getInt("dias_para_publicacion")
+                    );
 
-                    EstadoEvento estadoEvento =
-                            new EstadoEvento(
-                                    rs.getInt(21),
-                                    rs.getString(22)
-                            );
+                    EstadoPublicacion ep = new EstadoPublicacion();
+                    ep.setIdEstado_publicacion(
+                            rs.getInt("idEstado_publicacion")
+                    );
+                    ep.setEstado(
+                            rs.getString("estado_publicacion")
+                    );
 
-                    Evento evento =
-                            new Evento(
-                                    rs.getInt(1),
-                                    rs.getString(2),
-                                    rs.getString(3),
-                                    rs.getInt(4),
-                                    categoria,
-                                    rs.getDate(5),
-                                    rs.getTime(6),
-                                    rs.getTime(7),
-                                    rs.getString(8),
-                                    rs.getString(9),
-                                    rs.getString(10),
-                                    rs.getDouble(11),
-                                    distrito,
-                                    rs.getInt(12),
-                                    estadoPublicacion,
-                                    estadoEvento,
-                                    rs.getBoolean(23)
-                            );
+                    EstadoEvento ee = new EstadoEvento();
+                    ee.setIdEstado_evento(
+                            rs.getInt("idEstado_evento")
+                    );
+                    ee.setEstado(
+                            rs.getString("estado_evento")
+                    );
+
+                    Region region = new Region();
+                    region.setIdRegion(rs.getInt("idRegion"));
+                    region.setNombre(rs.getString("region_nombre"));
+
+                    Distrito distrito = new Distrito();
+                    distrito.setIdDistrito(rs.getInt("idDistrito"));
+                    distrito.setNombre(rs.getString("distrito_nombre"));
+                    distrito.setRegion(region);
+
+                    evento.setCategoria(cat);
+                    evento.setEstadoPublicacion(ep);
+                    evento.setEstadoEvento(ee);
+                    evento.setDistrito(distrito);
+
                     eventos.add(evento);
                 }
                 return eventos;
             }
-
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
