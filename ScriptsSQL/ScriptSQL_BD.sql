@@ -223,6 +223,7 @@ CREATE TABLE IF NOT EXISTS `ticket_flow`.`administrador` (
   `apellido_materno` VARCHAR(45) NOT NULL,
   `dni` VARCHAR(45) NOT NULL,
   `contrasena` VARCHAR(45) NOT NULL,
+    PRIMARY KEY (`idAdministrador`),
   INDEX `fk_Administrador_Usuario1_idx` (`idAdministrador` ASC) VISIBLE,
   UNIQUE INDEX `codigo_UNIQUE` (`codigo` ASC) VISIBLE,
   UNIQUE INDEX `contrasena_UNIQUE` (`contrasena` ASC) VISIBLE,
