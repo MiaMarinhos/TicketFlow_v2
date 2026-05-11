@@ -35,4 +35,10 @@ public class Banco {
     public void setNombre_corto(String nombre_corto) {
         this.nombre_corto = nombre_corto;
     }
+
+    @Override
+    public String toString() {
+        return id + " - " + nombre_largo + " - " + nombre_corto;
+    }
+
 }
