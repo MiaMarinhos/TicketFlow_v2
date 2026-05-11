@@ -16,10 +16,10 @@ public interface IUsuarioBL {
 
     //void iniciarSesion();
     /*
-    void editarPerfil();
-    void verPerfil();
-    void buscarEventos();
-    void enviarSolicitud();
+    void editarPerfil() throws BusinessLogicException;
+    void verPerfil() throws BusinessLogicException;
+    void buscarEventos() throws BusinessLogicException;
+    void enviarSolicitud() throws BusinessLogicException;
 
      */
 }
