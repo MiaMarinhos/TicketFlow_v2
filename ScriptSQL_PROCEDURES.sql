@@ -378,7 +378,7 @@ DELIMITER ;
 -- -----------------------------------------------------
 -- PROCEDURES PARA CAPA DE EVENTO
 -- -----------------------------------------------------
-
+DELIMITER //
 CREATE PROCEDURE SP_INSERTAR_EVENTO (IN p_id_Evento INT, IN p_titulo VARCHAR(100),
                                      IN p_descripcion VARCHAR(250), IN p_capacidad_entradas INT , IN p_fecha DATE,
                                      IN p_hora_inicio TIME, IN p_hora_fin TIME, IN p_ubicacion VARCHAR(100),
@@ -494,11 +494,11 @@ ORDER BY idEvento;
 
 END//
 
-
+DELIMITER ;
 -- -----------------------------------------------------
 -- PROCEDURES PARA CAPA DE ESTADO_EVENTO
 -- -----------------------------------------------------
-
+DELIMITER //
 CREATE PROCEDURE SP_INSERTAR_ESTADO_EVENTO(
     IN p_idEstado_evento INT,
     IN p_estado VARCHAR(45)
@@ -553,10 +553,11 @@ FROM estado_evento
 ORDER BY idEstado_evento;
 END//
 
+DELIMITER ;
 -- -----------------------------------------------------
 -- PROCEDURES PARA CAPA DE categoria_evento
 -- -----------------------------------------------------
-
+DELIMITER //
 
 CREATE PROCEDURE SP_INSERTAR_CATEGORIA_EVENTO(
     IN p_idCategoria_evento INT,
@@ -619,11 +620,11 @@ FROM categoria_evento
 ORDER BY idCategoria_evento;
 END
 //
-
+DELIMITER ;
 -- -----------------------------------------------------
 -- PROCEDURES PARA CAPA DE estado_publicacion
 -- -----------------------------------------------------
-
+DELIMITER //
 CREATE PROCEDURE SP_INSERTAR_ESTADO_PUBLICACION(
     IN p_idEstado_publicacion INT,
     IN p_estado VARCHAR(45)
@@ -679,3 +680,4 @@ SELECT
 FROM estado_publicacion
 ORDER BY idEstado_publicacion;
 END
+DELIMITER ;
