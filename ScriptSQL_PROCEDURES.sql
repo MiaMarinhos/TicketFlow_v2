@@ -394,8 +394,6 @@ VALUES(p_titulo , p_descripcion, p_capacidad_entradas , p_fecha,
        p_nombre_establecimiento, p_img, p_precio,
        p_idDistrito, p_idAnfitrion, p_idCategoria_evento,
        p_idEstado_publicacion, p_idEstado_evento)
-
-    SET p_id_Evento = LAST_INSERT_ID();
 END //
 
 CREATE PROCEDURE SP_LEER_EVENTO (IN p_id_Evento INT)
