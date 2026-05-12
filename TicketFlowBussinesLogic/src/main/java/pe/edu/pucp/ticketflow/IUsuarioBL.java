@@ -15,11 +15,11 @@ public interface IUsuarioBL {
     public Anfitrion registrarAnfitrion(Anfitrion anfitrion) throws BusinessLogicException;
 
     //void iniciarSesion();
-    /*
+
     void editarPerfil() throws BusinessLogicException;
-    void verPerfil() throws BusinessLogicException;
+    Usuario verPerfil(Integer idUsuario) throws BusinessLogicException;
     void buscarEventos() throws BusinessLogicException;
     void enviarSolicitud() throws BusinessLogicException;
 
-     */
+
 }
