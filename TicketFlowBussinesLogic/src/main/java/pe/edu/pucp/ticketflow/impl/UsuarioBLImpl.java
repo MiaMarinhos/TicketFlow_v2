@@ -81,5 +81,43 @@ public class UsuarioBLImpl implements IUsuarioBL {
         }
     }
 
+    @Override
+    public Usuario verPerfil(Integer idUsuario)
+            throws BusinessLogicException {
 
+        try {
+
+            Usuario usuario =
+                    usuarioDAO.read(idUsuario);
+
+            if(usuario == null){
+                throw new BusinessLogicException(
+                        "Usuario no encontrado"
+                );
+            }
+
+            String tipo =
+                    usuario.getTipo().getTipoUsuario();
+            switch (tipo){
+
+                case "CLIENTE":
+                    return clienteDAO.read(idUsuario);
+
+                case "ANFITRION":
+                    return anfitrionDAO.read(idUsuario);
+
+                default:
+                    throw new BusinessLogicException(
+                            "Tipo de usuario inválido"
+                    );
+            }
+
+        } catch(Exception ex){
+
+            if(ex instanceof BusinessLogicException)
+                throw (BusinessLogicException) ex;
+
+            throw new BusinessLogicException(ex);
+        }
+    }
 }
