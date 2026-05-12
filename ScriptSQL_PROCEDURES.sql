@@ -495,4 +495,187 @@ ORDER BY idEvento;
 END//
 
 
+-- -----------------------------------------------------
+-- PROCEDURES PARA CAPA DE ESTADO_EVENTO
+-- -----------------------------------------------------
 
+CREATE PROCEDURE SP_INSERTAR_ESTADO_EVENTO(
+    IN p_idEstado_evento INT,
+    IN p_estado VARCHAR(45)
+)
+BEGIN
+INSERT INTO estado_evento(
+    idEstado_evento,
+    estado
+)
+VALUES(
+          p_idEstado_evento,
+          p_estado
+      );
+END//
+
+CREATE PROCEDURE SP_LEER_ESTADO_EVENTO(
+    IN p_idEstado_evento INT
+)
+BEGIN
+SELECT
+    idEstado_evento,
+    estado
+FROM estado_evento
+WHERE idEstado_evento = p_idEstado_evento;
+END//
+
+CREATE PROCEDURE SP_ACTUALIZAR_ESTADO_EVENTO(
+    IN p_idEstado_evento INT,
+    IN p_estado VARCHAR(45)
+)
+BEGIN
+UPDATE estado_evento
+SET
+    estado = p_estado
+WHERE idEstado_evento = p_idEstado_evento;
+END//
+
+CREATE PROCEDURE SP_ELIMINAR_ESTADO_EVENTO(
+    IN p_idEstado_evento INT
+)
+BEGIN
+DELETE FROM estado_evento
+WHERE idEstado_evento = p_idEstado_evento;
+END//
+
+CREATE PROCEDURE SP_LISTAR_ESTADO_EVENTOS()
+BEGIN
+SELECT
+    idEstado_evento,
+    estado
+FROM estado_evento
+ORDER BY idEstado_evento;
+END//
+
+-- -----------------------------------------------------
+-- PROCEDURES PARA CAPA DE categoria_evento
+-- -----------------------------------------------------
+
+
+CREATE PROCEDURE SP_INSERTAR_CATEGORIA_EVENTO(
+    IN p_idCategoria_evento INT,
+    IN p_nombre VARCHAR(45),
+    IN p_dias_para_publicacion INT
+)
+BEGIN
+INSERT INTO categoria_evento(
+    idCategoria_evento,
+    nombre,
+    dias_para_publicacion
+)
+VALUES(
+          p_idCategoria_evento,
+          p_nombre,
+          p_dias_para_publicacion
+      );
+END
+//
+CREATE PROCEDURE SP_LEER_CATEGORIA_EVENTO(
+    IN p_idCategoria_evento INT
+)
+BEGIN
+SELECT
+    idCategoria_evento,
+    nombre,
+    dias_para_publicacion
+FROM categoria_evento
+WHERE idCategoria_evento = p_idCategoria_evento;
+END
+//
+CREATE PROCEDURE SP_ACTUALIZAR_CATEGORIA_EVENTO(
+    IN p_idCategoria_evento INT,
+    IN p_nombre VARCHAR(45),
+    IN p_dias_para_publicacion INT
+    )
+BEGIN
+UPDATE categoria_evento
+SET
+    nombre = p_nombre,
+    dias_para_publicacion = p_dias_para_publicacion
+WHERE idCategoria_evento = p_idCategoria_evento;
+END
+//
+CREATE PROCEDURE SP_ELIMINAR_CATEGORIA_EVENTO(
+    IN p_idCategoria_evento INT
+)
+BEGIN
+DELETE FROM categoria_evento
+WHERE idCategoria_evento = p_idCategoria_evento;
+END
+//
+CREATE PROCEDURE SP_LISTAR_CATEGORIA_EVENTOS()
+BEGIN
+SELECT
+    idCategoria_evento,
+    nombre,
+    dias_para_publicacion
+FROM categoria_evento
+ORDER BY idCategoria_evento;
+END
+//
+
+-- -----------------------------------------------------
+-- PROCEDURES PARA CAPA DE estado_publicacion
+-- -----------------------------------------------------
+
+CREATE PROCEDURE SP_INSERTAR_ESTADO_PUBLICACION(
+    IN p_idEstado_publicacion INT,
+    IN p_estado VARCHAR(45)
+)
+BEGIN
+INSERT INTO estado_publicacion(
+    idEstado_publicacion,
+    estado
+)
+VALUES(
+          p_idEstado_publicacion,
+          p_estado
+      );
+END
+//
+CREATE PROCEDURE SP_LEER_ESTADO_PUBLICACION(
+    IN p_idEstado_publicacion INT
+)
+BEGIN
+SELECT
+    idEstado_publicacion,
+    estado
+FROM estado_publicacion
+WHERE idEstado_publicacion =
+      p_idEstado_publicacion;
+END
+//
+CREATE PROCEDURE SP_ACTUALIZAR_ESTADO_PUBLICACION(
+    IN p_idEstado_publicacion INT,
+    IN p_estado VARCHAR(45)
+    )
+BEGIN
+UPDATE estado_publicacion
+SET estado = p_estado
+WHERE idEstado_publicacion =
+      p_idEstado_publicacion;
+END
+//
+CREATE PROCEDURE SP_ELIMINAR_ESTADO_PUBLICACION(
+    IN p_idEstado_publicacion INT
+)
+BEGIN
+DELETE FROM estado_publicacion
+WHERE idEstado_publicacion =
+      p_idEstado_publicacion;
+END
+//
+CREATE PROCEDURE SP_LISTAR_ESTADO_PUBLICACIONES()
+BEGIN
+SELECT
+    idEstado_publicacion,
+    estado
+FROM estado_publicacion
+ORDER BY idEstado_publicacion;
+END

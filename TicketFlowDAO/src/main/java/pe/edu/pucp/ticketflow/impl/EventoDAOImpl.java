@@ -1,13 +1,8 @@
 package pe.edu.pucp.ticketflow.impl;
 
 import pe.edu.pucp.ticketflow.IEventoDAO;
-import pe.edu.pucp.ticketflow.evento.model.EstadoEvento;
-import pe.edu.pucp.ticketflow.evento.model.EstadoPublicacion;
 import pe.edu.pucp.ticketflow.evento.model.Evento;
 import pe.edu.pucp.ticketflow.dao.manager.DBManager;
-import pe.edu.pucp.ticketflow.evento.model.categoria_evento;
-import pe.edu.pucp.ticketflow.ubicacion.model.Distrito;
-import pe.edu.pucp.ticketflow.ubicacion.model.Region;
 
 import java.sql.*;
 
@@ -18,7 +13,7 @@ public class EventoDAOImpl implements IEventoDAO {
     @Override
     public Evento create(Evento eve){
         // INSERT
-        String sql = "{CALL SP_INSERTAR_EVENTO (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
+        String sql = "{CALL SP_INSERTAR_EVENTO (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
         try(Connection connection = DBManager.getInstance().getConnection();
 
             CallableStatement cs = connection.prepareCall(sql)) {
@@ -28,7 +23,7 @@ public class EventoDAOImpl implements IEventoDAO {
             cs.setString(2, eve.getTitulo());
             cs.setString(3, eve.getDescripcion());
             cs.setInt(4, eve.getCapacidad_entradas());
-            cs.setDate(5, (Date) eve.getFecha());
+            cs.setDate(5, new java.sql.Date(eve.getFecha().getTime()));
             cs.setTime(6, eve.getHora_inicio());
             cs.setTime(7, eve.getHora_fin());
             cs.setString(8, eve.getUbicacion());
@@ -40,10 +35,8 @@ public class EventoDAOImpl implements IEventoDAO {
             cs.setInt(14, eve.getFK_idCategoria_evento());
             cs.setInt(15, eve.getFK_idEstadoPublicacion());
             cs.setInt(16, eve.getFK_idEstadoEvento());
-            cs.setBoolean(17, eve.isActivo()); //aunque en teoria seria siempre true podria hardcodearlo de frente
 
             cs.execute();
-            eve.setIdEvento(cs.getInt(1));
 
             return eve;
         } catch (SQLException e) {
@@ -55,7 +48,7 @@ public class EventoDAOImpl implements IEventoDAO {
     public Evento read(Integer id) {
 // SELECT por ID
         String sql =
-                "SELECT {CALL SP_LEER_EVENTO(?)}";
+                "{CALL SP_LEER_EVENTO(?)}";
 
         try (Connection connection = DBManager.getInstance().getConnection();
              CallableStatement cs = connection.prepareCall(sql)) {
@@ -85,7 +78,7 @@ public class EventoDAOImpl implements IEventoDAO {
 
                     evento.setFK_idEstadoPublicacion(rs.getInt("idEstado_publicacion"));
 
-                    evento.setFK_idEstadoPublicacion(rs.getInt("idEstado_evento"));
+                    evento.setFK_idEstadoEvento(rs.getInt("idEstado_evento"));
 
                     evento.setFK_idDistrito(rs.getInt("idDistrito"));
 
@@ -104,15 +97,15 @@ public class EventoDAOImpl implements IEventoDAO {
     public Evento update(Evento evento, Integer id){
         // UPDATE
         String sql =
-                "{CALL SP_ACTUALIZAR_EVENTO(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
+                "{CALL SP_ACTUALIZAR_EVENTO(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
         try(Connection connection = DBManager.getInstance().getConnection();
             CallableStatement cs = connection.prepareCall(sql)) {
 
-            cs.setInt(1, evento.getIdEvento());
+            cs.setInt(1, id);
             cs.setString(2, evento.getTitulo());
             cs.setString(3, evento.getDescripcion());
             cs.setInt(4, evento.getCapacidad_entradas());
-            cs.setDate(5, (Date) evento.getFecha());
+            cs.setDate(5, new java.sql.Date(evento.getFecha().getTime()));
             cs.setTime(6, evento.getHora_inicio());
             cs.setTime(7, evento.getHora_fin());
             cs.setString(8, evento.getUbicacion());
@@ -126,9 +119,7 @@ public class EventoDAOImpl implements IEventoDAO {
             cs.setInt(15, evento.getFK_idEstadoPublicacion());
             cs.setInt(16, evento.getFK_idEstadoEvento());
 
-            cs.setBoolean(17, evento.isActivo());
-
-            int filas = cs.executeUpdate();
+            cs.executeUpdate();
 
             return evento;
         } catch (SQLException e) {
@@ -138,9 +129,8 @@ public class EventoDAOImpl implements IEventoDAO {
 
     @Override
     public void delete(Integer id){
-        // UPDATE estado = false
         String sql =
-                "{CALL SP_ELIMINAR_EVENTO(?)}}";
+                "{CALL SP_ELIMINAR_EVENTO(?)}";
         try(Connection connection = DBManager.getInstance().getConnection();
             CallableStatement cs = connection.prepareCall(sql)) {
             cs.setInt(1,id);
@@ -155,7 +145,7 @@ public class EventoDAOImpl implements IEventoDAO {
     @Override
     public List<Evento> listAll(){
         //SELECT *
-        String sql ="SELECT {CALL SP_LISTAR_EVENTO()}";
+        String sql ="{CALL SP_LISTAR_EVENTOS()}";
 
 
         try (Connection connection = DBManager.getInstance().getConnection();
@@ -182,7 +172,6 @@ public class EventoDAOImpl implements IEventoDAO {
                     evento.setImg(rs.getString("img"));
                     evento.setPrecio(rs.getDouble("precio"));
                     evento.setIdAnfitrion(rs.getInt("idAnfitrion"));
-                    evento.setActivo(rs.getBoolean("activo"));
 
                     evento.setFK_idCategoria_evento(rs.getInt("idCategoria_evento"));
 
@@ -190,7 +179,7 @@ public class EventoDAOImpl implements IEventoDAO {
 
                     evento.setFK_idEstadoEvento(rs.getInt("idEstado_evento"));
                     evento.setFK_idDistrito(rs.getInt("idDistrito"));
-                    
+
                     eventos.add(evento);
                 }
                 return eventos;
