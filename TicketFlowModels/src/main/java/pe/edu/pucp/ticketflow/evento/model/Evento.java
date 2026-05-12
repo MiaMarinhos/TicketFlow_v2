@@ -11,6 +11,7 @@ public class Evento {
     private String descripcion;
     private int capacidad_entradas;
     private categoria_evento categoria;
+    private int FK_idCategoria_evento;
     private Date fecha;
     private Time hora_inicio;
     private Time hora_fin;
@@ -19,9 +20,12 @@ public class Evento {
     private String img;
     private double precio;
     private Distrito distrito;
+    private int FK_idDistrito;
     private int idAnfitrion;
     private EstadoPublicacion estadoPublicacion;
+    private int FK_idEstadoPublicacion;
     private EstadoEvento estadoEvento;
+    private int FK_idEstadoEvento;
     private boolean activo;
     public Evento() {
 
@@ -52,15 +56,15 @@ public class Evento {
     }
     //este se usa cuando se lee, por eso pasamos "activo" como parametro
     public Evento(int idEvento,String titulo,String descripcion,int capacidad_entradas,
-                  categoria_evento categoria, Date fecha,Time hora_inicio,Time hora_fin,
+                  int FK_idCategoria_evento, Date fecha,Time hora_inicio,Time hora_fin,
                   String ubicacion,String nombre_establecimiento,String img,double precio,
-                  Distrito distrito,int idAnfitrion,EstadoPublicacion estadoPublicacion, EstadoEvento estadoEvento,
+                  int FK_idDistrito,int idAnfitrion,int FK_idEstadoPublicacion,int FK_idEstadoEvento,
                   boolean activo) {
         this.idEvento = idEvento;
         this.titulo = titulo;
         this.descripcion = descripcion;
         this.capacidad_entradas = capacidad_entradas;
-        this.categoria = categoria;
+        this.FK_idCategoria_evento = FK_idCategoria_evento;
         this.fecha = fecha;
         this.hora_inicio = hora_inicio;
         this.hora_fin = hora_fin;
@@ -68,10 +72,10 @@ public class Evento {
         this.nombre_establecimiento = nombre_establecimiento;
         this.img = img;
         this.precio = precio;
-        this.distrito = distrito;
+        this.FK_idDistrito = FK_idDistrito;
         this.idAnfitrion = idAnfitrion;
-        this.estadoPublicacion = estadoPublicacion;
-        this.estadoEvento = estadoEvento;
+        this.FK_idEstadoPublicacion = FK_idEstadoPublicacion;
+        this.FK_idEstadoEvento = FK_idEstadoEvento;
         this.activo=activo;
     }
 
@@ -209,5 +213,37 @@ public class Evento {
 
     public void setActivo(boolean activo) {
         this.activo = activo;
+    }
+
+    public int getFK_idEstadoEvento() {
+        return FK_idEstadoEvento;
+    }
+
+    public void setFK_idEstadoEvento(int FK_idEstadoEvento) {
+        this.FK_idEstadoEvento = FK_idEstadoEvento;
+    }
+
+    public int getFK_idEstadoPublicacion() {
+        return FK_idEstadoPublicacion;
+    }
+
+    public void setFK_idEstadoPublicacion(int FK_idEstadoPublicacion) {
+        this.FK_idEstadoPublicacion = FK_idEstadoPublicacion;
+    }
+
+    public int getFK_idDistrito() {
+        return FK_idDistrito;
+    }
+
+    public void setFK_idDistrito(int FK_idDistrito) {
+        this.FK_idDistrito = FK_idDistrito;
+    }
+
+    public int getFK_idCategoria_evento() {
+        return FK_idCategoria_evento;
+    }
+
+    public void setFK_idCategoria_evento(int FK_idCategoria_evento) {
+        this.FK_idCategoria_evento = FK_idCategoria_evento;
     }
 }

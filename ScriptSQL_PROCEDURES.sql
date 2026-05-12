@@ -401,47 +401,26 @@ END //
 CREATE PROCEDURE SP_LEER_EVENTO (IN p_id_Evento INT)
 BEGIN
 SELECT
-    e.idEvento,
-    e.titulo,
-    e.descripcion,
-    e.capacidad_entradas,
-    e.fecha,
-    e.hora_inicio,
-    e.hora_fin,
-    e.ubicacion,
-    e.nombre_establecimiento,
-    e.img,
-    e.precio,
-    e.idAnfitrion,
+    idEvento,
+    titulo,
+    descripcion,
+    capacidad_entradas,
+    fecha,
+    hora_inicio,
+    hora_fin,
+    ubicacion,
+    nombre_establecimiento,
+    img,
+    precio,
+    idDistrito,
+    idAnfitrion,
+    idCategoria_evento,
+    idEstado_publicacion,
+    idEstado_evento,
 
-    c.idCategoria_evento,
-    c.nombre AS categoria_nombre,
-    c.dias_para_publicacion,
+FROM evento
 
-    ep.idEstado_publicacion,
-    ep.estado AS estado_publicacion,
-
-    ee.idEstado_evento,
-    ee.estado AS estado_evento,
-
-    d.idDistrito,
-    d.nombre AS distrito_nombre,
-
-    r.idRegion,
-    r.nombre AS region_nombre
-
-FROM evento e
-         JOIN mydb.categoria_evento c
-              ON e.idCategoria_evento = c.idCategoria_evento
-         JOIN mydb.estado_publicacion ep
-              ON e.idEstado_publicacion = ep.idEstado_publicacion
-         JOIN mydb.estado_evento ee
-              ON e.idEstado_evento = ee.idEstado_evento
-         JOIN distrito d
-              ON e.idDistrito = d.idDistrito
-         JOIN region r
-              ON d.idRegion = r.idRegion
-WHERE e.idEvento = p_id_evento;
+WHERE idEvento = p_id_evento;
 
 END //
 
@@ -494,49 +473,28 @@ END //
 CREATE PROCEDURE SP_LISTAR_EVENTOS()
 BEGIN
 SELECT
-    e.idEvento,
-    e.titulo,
-    e.descripcion,
-    e.capacidad_entradas,
-    e.fecha,
-    e.hora_inicio,
-    e.hora_fin,
-    e.ubicacion,
-    e.nombre_establecimiento,
-    e.img,
-    e.precio,
-    e.idAnfitrion,
-    e.activo,
+    idEvento,
+    titulo,
+    descripcion,
+    capacidad_entradas,
+    fecha,
+    hora_inicio,
+    hora_fin,
+    ubicacion,
+    nombre_establecimiento,
+    img,
+    precio,
+    idDistrito,
+    idAnfitrion,
+    idCategoria_evento,
+    idEstado_publicacion,
+    idEstado_evento
 
-    c.idCategoria_evento,
-    c.nombre AS categoria_nombre,
-    c.dias_para_publicacion,
+FROM evento
 
-    ep.idEstado_publicacion,
-    ep.estado AS estado_publicacion,
+ORDER BY idEvento;
 
-    ee.idEstado_evento,
-    ee.estado AS estado_evento,
-
-    d.idDistrito,
-    d.nombre AS distrito_nombre,
-
-    r.idRegion,
-    r.nombre AS region_nombre
-
-FROM evento e
-         JOIN mydb.categoria_evento c
-              ON e.idCategoria_evento = c.idCategoria_evento
-         JOIN mydb.estado_publicacion ep
-              ON e.idEstado_publicacion = ep.idEstado_publicacion
-         JOIN mydb.estado_evento ee
-              ON e.idEstado_evento = ee.idEstado_evento
-         JOIN distrito d
-              ON e.idDistrito = d.idDistrito
-         JOIN region r
-              ON d.idRegion = r.idRegion;
-ORDER BY idEvento
-END
+END//
 
 
 
