@@ -79,4 +79,10 @@ public class Administrador {
     public void setContrasena(String contrasena) {
         this.contrasena = contrasena;
     }
+
+    @Override
+    public String toString(){
+        return idAdministrador + " - " + codigo + " - " + nombre + " "
+                + apellidoPaterno + " " + apellidoMaterno + " - " + dni;
+    }
 }
