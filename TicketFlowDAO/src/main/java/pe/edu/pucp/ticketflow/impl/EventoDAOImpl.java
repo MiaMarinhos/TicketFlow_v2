@@ -22,7 +22,8 @@ public class EventoDAOImpl implements IEventoDAO {
         try(Connection connection = DBManager.getInstance().getConnection();
 
             CallableStatement cs = connection.prepareCall(sql)) {
-            cs.registerOutParameter(1, Types.INTEGER);
+
+            cs.setInt(1,eve.getIdEvento());
 
             cs.setString(2, eve.getTitulo());
             cs.setString(3, eve.getDescripcion());

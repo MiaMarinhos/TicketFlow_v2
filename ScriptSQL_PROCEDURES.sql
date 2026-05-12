@@ -379,21 +379,22 @@ DELIMITER ;
 -- PROCEDURES PARA CAPA DE EVENTO
 -- -----------------------------------------------------
 
-CREATE PROCEDURE SP_INSERTAR_EVENTO (OUT p_id_Evento INT, IN p_titulo VARCHAR(100),
+CREATE PROCEDURE SP_INSERTAR_EVENTO (IN p_id_Evento INT, IN p_titulo VARCHAR(100),
                                      IN p_descripcion VARCHAR(250), IN p_capacidad_entradas INT , IN p_fecha DATE,
                                      IN p_hora_inicio TIME, IN p_hora_fin TIME, IN p_ubicacion VARCHAR(100),
                                      IN p_nombre_establecimiento VARCHAR(45), IN p_img VARCHAR(450), IN p_precio DOUBLE,
                                      IN p_idDistrito INT, IN p_idAnfitrion INT, IN p_idCategoria_evento INT,
                                      IN p_idEstado_publicacion INT, IN p_idEstado_evento INT)
 BEGIN
-INSERT INTO evento (titulo, descripcion, capacidad_entradas, fecha, hora_inicio, hora_fin,
+INSERT INTO evento (idEvento, titulo, descripcion, capacidad_entradas, fecha, hora_inicio, hora_fin,
                     ubicacion, nombre_establecimiento, img, precio, idDistrito, idAnfitrion, idCategoria_evento, idEstado_publicacion,
-                    idEstado_evento,estado)
-VALUES(p_titulo , p_descripcion, p_capacidad_entradas , p_fecha,
+                    idEstado_evento)
+VALUES(p_id_Evento,p_titulo , p_descripcion, p_capacidad_entradas , p_fecha,
        p_hora_inicio, p_hora_fin, p_ubicacion,
        p_nombre_establecimiento, p_img, p_precio,
        p_idDistrito, p_idAnfitrion, p_idCategoria_evento,
-       p_idEstado_publicacion, p_idEstado_evento)
+       p_idEstado_publicacion, p_idEstado_evento);
+
 END //
 
 CREATE PROCEDURE SP_LEER_EVENTO (IN p_id_Evento INT)
@@ -414,11 +415,11 @@ SELECT
     idAnfitrion,
     idCategoria_evento,
     idEstado_publicacion,
-    idEstado_evento,
+    idEstado_evento
 
 FROM evento
 
-WHERE idEvento = p_id_evento;
+WHERE idEvento = p_id_Evento;
 
 END //
 
@@ -438,8 +439,7 @@ CREATE PROCEDURE SP_ACTUALIZAR_EVENTO(
     IN p_idAnfitrion INT,
     IN p_idCategoria_evento INT,
     IN p_idEstado_publicacion INT,
-    IN p_idEstado_evento INT,
-    IN p_activo BOOLEAN
+    IN p_idEstado_evento INT
 )
 BEGIN
 UPDATE evento
@@ -458,14 +458,14 @@ SET
     idAnfitrion = p_idAnfitrion,
     idCategoria_evento = p_idCategoria_evento,
     idEstado_publicacion = p_idEstado_publicacion,
-    idEstado_evento = p_idEstado_evento,
-    activo = p_activo
+    idEstado_evento = p_idEstado_evento
+
 WHERE idEvento = p_idEvento;
 END //
 
 CREATE PROCEDURE SP_ELIMINAR_EVENTO(IN p_idEvento INT)
 BEGIN
-DELETE FROM evento WHERE idEvento = p_idDistrito;
+DELETE FROM evento WHERE idEvento = p_idEvento;
 END //
 
 CREATE PROCEDURE SP_LISTAR_EVENTOS()
