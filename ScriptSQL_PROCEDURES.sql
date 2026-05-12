@@ -99,21 +99,91 @@ BEGIN
     SELECT * FROM estado_usuario WHERE idEstado_usuario = p_idEstadoUsuario;
 END //
 -- -------------------------------------------------------------------
-CREATE PROCEDURE SP_INSERTAR_CLIENTE(IN p_id_usuario int, IN p_puntos_bonus INT)
+-- -----------------------------------------------------
+-- PROCEDURES PARA CAPA DE CLIENTE
+-- -----------------------------------------------------
+
+DELIMITER //
+
+DROP PROCEDURE IF EXISTS SP_INSERTAR_CLIENTE //
+CREATE PROCEDURE SP_INSERTAR_CLIENTE(
+    IN p_id_usuario INT,
+    IN p_puntos_bonus INT
+)
 BEGIN
-    INSERT INTO cliente (idCliente, puntos_bonus)
-    VALUES (p_id_usuario, p_puntos_bonus);
+INSERT INTO cliente (idCliente, puntos_bonus)
+VALUES (p_id_usuario, p_puntos_bonus);
 END //
--- -----------------------------------------------------------------------------
-CREATE PROCEDURE SP_INSERTAR_ANFITRION(IN p_id_usuario INT, IN p_razon VARCHAR(45), IN p_ruc VARCHAR(45),
-	IN p_cuenta VARCHAR(45), IN p_idBanco INT)
+
+DROP PROCEDURE IF EXISTS SP_LEER_CLIENTE //
+CREATE PROCEDURE SP_LEER_CLIENTE(
+    IN p_idCliente INT
+)
 BEGIN
-    INSERT INTO anfitrion (idAnfitrion, razon_social, ruc, cuenta_bancaria, idBanco)
-    VALUES (p_id_usuario, p_razon, p_ruc, p_cuenta, p_idBanco);
+SELECT
+    u.idUsuario,
+    u.dni,
+    u.nombre,
+    u.apellido_paterno,
+    u.apellido_materno,
+    u.telefono,
+    u.correo_electronico,
+    u.contrasena,
+    u.fecha_registro,
+    u.fecha_nacimiento,
+    u.idDistrito,
+    u.idEstado,
+    c.idCliente,
+    c.puntos_bonus
+FROM cliente c
+         INNER JOIN usuario u ON c.idCliente = u.idUsuario
+WHERE c.idCliente = p_idCliente;
+END //
+
+DROP PROCEDURE IF EXISTS SP_ACTUALIZAR_CLIENTE //
+CREATE PROCEDURE SP_ACTUALIZAR_CLIENTE(
+    IN p_idCliente INT,
+    IN p_puntos_bonus INT
+)
+BEGIN
+UPDATE cliente
+SET puntos_bonus = p_puntos_bonus
+WHERE idCliente = p_idCliente;
+END //
+
+DROP PROCEDURE IF EXISTS SP_ELIMINAR_CLIENTE //
+CREATE PROCEDURE SP_ELIMINAR_CLIENTE(
+    IN p_idCliente INT
+)
+BEGIN
+DELETE FROM cliente
+WHERE idCliente = p_idCliente;
+END //
+
+DROP PROCEDURE IF EXISTS SP_LISTAR_CLIENTES //
+CREATE PROCEDURE SP_LISTAR_CLIENTES()
+BEGIN
+SELECT
+    u.idUsuario,
+    u.dni,
+    u.nombre,
+    u.apellido_paterno,
+    u.apellido_materno,
+    u.telefono,
+    u.correo_electronico,
+    u.contrasena,
+    u.fecha_registro,
+    u.fecha_nacimiento,
+    u.idDistrito,
+    u.idEstado,
+    c.idCliente,
+    c.puntos_bonus
+FROM cliente c
+         INNER JOIN usuario u ON c.idCliente = u.idUsuario
+ORDER BY c.idCliente;
 END //
 
 DELIMITER ;
-
    -- -----------------------------------------------------
 -- PROCEDURES PARA CAPA DE ADMINISTRADOR
 -- -----------------------------------------------------
@@ -494,11 +564,11 @@ ORDER BY idEvento;
 
 END//
 
-DELIMITER ;
+
 -- -----------------------------------------------------
 -- PROCEDURES PARA CAPA DE ESTADO_EVENTO
 -- -----------------------------------------------------
-DELIMITER //
+
 CREATE PROCEDURE SP_INSERTAR_ESTADO_EVENTO(
     IN p_idEstado_evento INT,
     IN p_estado VARCHAR(45)
@@ -553,11 +623,10 @@ FROM estado_evento
 ORDER BY idEstado_evento;
 END//
 
-DELIMITER ;
 -- -----------------------------------------------------
 -- PROCEDURES PARA CAPA DE categoria_evento
 -- -----------------------------------------------------
-DELIMITER //
+
 
 CREATE PROCEDURE SP_INSERTAR_CATEGORIA_EVENTO(
     IN p_idCategoria_evento INT,
@@ -620,11 +689,11 @@ FROM categoria_evento
 ORDER BY idCategoria_evento;
 END
 //
-DELIMITER ;
+
 -- -----------------------------------------------------
 -- PROCEDURES PARA CAPA DE estado_publicacion
 -- -----------------------------------------------------
-DELIMITER //
+
 CREATE PROCEDURE SP_INSERTAR_ESTADO_PUBLICACION(
     IN p_idEstado_publicacion INT,
     IN p_estado VARCHAR(45)
@@ -680,4 +749,3 @@ SELECT
 FROM estado_publicacion
 ORDER BY idEstado_publicacion;
 END
-DELIMITER ;

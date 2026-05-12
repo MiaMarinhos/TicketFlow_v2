@@ -29,7 +29,7 @@ public class UsuarioBLImpl implements IUsuarioBL {
                 nombreTipo = "ANFITRION";
             }
 
-            TipoUsuario tipo = tipoUsuarioDAO.buscarTipoUsuarioPorTipo("nombreTipo");
+            TipoUsuario tipo = tipoUsuarioDAO.buscarTipoUsuarioPorTipo(nombreTipo);
             usuario.setTipo(tipo);
             /*
             *   1 : Activo
