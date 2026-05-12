@@ -34,11 +34,11 @@ public class EventoDAOImpl implements IEventoDAO {
             cs.setString(9, eve.getNombre_establecimiento());
             cs.setString(10, eve.getImg());
             cs.setDouble(11, eve.getPrecio());
-            cs.setInt(12, eve.getDistrito().getIdDistrito());
+            cs.setInt(12, eve.getFK_idDistrito());
             cs.setInt(13, eve.getIdAnfitrion());
-            cs.setInt(14, eve.getCategoria().getIdCategoria_evento());
-            cs.setInt(15, eve.getEstadoPublicacion().getIdEstado_publicacion());
-            cs.setInt(16, eve.getEstadoEvento().getIdEstado_evento());
+            cs.setInt(14, eve.getFK_idCategoria_evento());
+            cs.setInt(15, eve.getFK_idEstadoPublicacion());
+            cs.setInt(16, eve.getFK_idEstadoEvento());
             cs.setBoolean(17, eve.isActivo()); //aunque en teoria seria siempre true podria hardcodearlo de frente
 
             cs.execute();
@@ -80,32 +80,13 @@ public class EventoDAOImpl implements IEventoDAO {
                     evento.setPrecio(rs.getDouble("precio"));
                     evento.setIdAnfitrion(rs.getInt("idAnfitrion"));
 
-                    categoria_evento cat = new categoria_evento();
-                    cat.setIdCategoria_evento(rs.getInt("idCategoria_evento"));
-                    cat.setNombre(rs.getString("categoria_nombre"));
-                    cat.setDias_para_publicacion(rs.getInt("dias_para_publicacion"));
-                    evento.setCategoria(cat);
+                    evento.setFK_idCategoria_evento(rs.getInt("idCategoria_evento"));
 
-                    EstadoPublicacion ep = new EstadoPublicacion();
-                    ep.setIdEstado_publicacion(rs.getInt("idEstado_publicacion"));
-                    ep.setEstado(rs.getString("estado_publicacion"));
-                    evento.setEstadoPublicacion(ep);
+                    evento.setFK_idEstadoPublicacion(rs.getInt("idEstado_publicacion"));
 
-                    EstadoEvento ee = new EstadoEvento();
-                    ee.setIdEstado_evento(rs.getInt("idEstado_evento"));
-                    ee.setEstado(rs.getString("estado_evento"));
-                    evento.setEstadoEvento(ee);
+                    evento.setFK_idEstadoPublicacion(rs.getInt("idEstado_evento"));
 
-                    Region region = new Region();
-                    region.setIdRegion(rs.getInt("idRegion"));
-                    region.setNombre(rs.getString("region_nombre"));
-
-                    Distrito distrito = new Distrito();
-                    distrito.setIdDistrito(rs.getInt("idDistrito"));
-                    distrito.setNombre(rs.getString("distrito_nombre"));
-                    distrito.setRegion(region);
-
-                    evento.setDistrito(distrito);
+                    evento.setFK_idDistrito(rs.getInt("idDistrito"));
 
                     return evento;
                 }
@@ -138,11 +119,11 @@ public class EventoDAOImpl implements IEventoDAO {
             cs.setString(10, evento.getImg());
             cs.setDouble(11, evento.getPrecio());
 
-            cs.setInt(12, evento.getDistrito().getIdDistrito());
+            cs.setInt(12, evento.getFK_idDistrito());
             cs.setInt(13, evento.getIdAnfitrion());
-            cs.setInt(14, evento.getCategoria().getIdCategoria_evento());
-            cs.setInt(15, evento.getEstadoPublicacion().getIdEstado_publicacion());
-            cs.setInt(16, evento.getEstadoEvento().getIdEstado_evento());
+            cs.setInt(14, evento.getFK_idCategoria_evento());
+            cs.setInt(15, evento.getFK_idEstadoPublicacion());
+            cs.setInt(16, evento.getFK_idEstadoEvento());
 
             cs.setBoolean(17, evento.isActivo());
 
@@ -202,45 +183,13 @@ public class EventoDAOImpl implements IEventoDAO {
                     evento.setIdAnfitrion(rs.getInt("idAnfitrion"));
                     evento.setActivo(rs.getBoolean("activo"));
 
-                    categoria_evento cat = new categoria_evento();
-                    cat.setIdCategoria_evento(
-                            rs.getInt("idCategoria_evento")
-                    );
-                    cat.setNombre(rs.getString("categoria_nombre"));
-                    cat.setDias_para_publicacion(
-                            rs.getInt("dias_para_publicacion")
-                    );
+                    evento.setFK_idCategoria_evento(rs.getInt("idCategoria_evento"));
 
-                    EstadoPublicacion ep = new EstadoPublicacion();
-                    ep.setIdEstado_publicacion(
-                            rs.getInt("idEstado_publicacion")
-                    );
-                    ep.setEstado(
-                            rs.getString("estado_publicacion")
-                    );
+                    evento.setFK_idEstadoPublicacion(rs.getInt("idEstado_publicacion"));
 
-                    EstadoEvento ee = new EstadoEvento();
-                    ee.setIdEstado_evento(
-                            rs.getInt("idEstado_evento")
-                    );
-                    ee.setEstado(
-                            rs.getString("estado_evento")
-                    );
-
-                    Region region = new Region();
-                    region.setIdRegion(rs.getInt("idRegion"));
-                    region.setNombre(rs.getString("region_nombre"));
-
-                    Distrito distrito = new Distrito();
-                    distrito.setIdDistrito(rs.getInt("idDistrito"));
-                    distrito.setNombre(rs.getString("distrito_nombre"));
-                    distrito.setRegion(region);
-
-                    evento.setCategoria(cat);
-                    evento.setEstadoPublicacion(ep);
-                    evento.setEstadoEvento(ee);
-                    evento.setDistrito(distrito);
-
+                    evento.setFK_idEstadoEvento(rs.getInt("idEstado_evento"));
+                    evento.setFK_idDistrito(rs.getInt("idDistrito"));
+                    
                     eventos.add(evento);
                 }
                 return eventos;
