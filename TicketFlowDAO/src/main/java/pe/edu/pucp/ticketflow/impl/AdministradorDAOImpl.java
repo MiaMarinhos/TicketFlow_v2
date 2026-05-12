@@ -13,24 +13,24 @@ import java.util.List;
 
 public class AdministradorDAOImpl implements IAdministradorDAO {
     @Override
-    public Administrador create(Administrador t) {
+    public Administrador create(Administrador administrador) {
 
-        String sql = "{CALL USP_INSERTAR_ADMINISTRADOR(?, ?, ?, ?, ?, ?, ?)}";
+        String sql = "{CALL SP_INSERTAR_ADMINISTRADOR(?, ?, ?, ?, ?, ?, ?)}";
 
         try (Connection con = DBManager.getInstance().getConnection();
              CallableStatement cs = con.prepareCall(sql)) {
 
-            cs.setInt(1, t.getIdAdministrador());
-            cs.setString(2, t.getCodigo());
-            cs.setString(3, t.getNombre());
-            cs.setString(4, t.getApellidoPaterno());
-            cs.setString(5, t.getApellidoMaterno());
-            cs.setString(6, t.getDni());
-            cs.setString(7, t.getContrasena());
+            cs.setInt(1, administrador.getIdAdministrador());
+            cs.setString(2, administrador.getCodigo());
+            cs.setString(3, administrador.getNombre());
+            cs.setString(4, administrador.getApellidoPaterno());
+            cs.setString(5, administrador.getApellidoMaterno());
+            cs.setString(6, administrador.getDni());
+            cs.setString(7, administrador.getContrasena());
 
             cs.execute();
 
-            return t;
+            return administrador;
 
         } catch (SQLException e) {
             throw new RuntimeException("Error al crear administrador", e);
@@ -39,7 +39,7 @@ public class AdministradorDAOImpl implements IAdministradorDAO {
 
     @Override
     public Administrador read(Integer id) {
-        String sql = "{CALL USP_LEER_ADMINISTRADOR(?)}";
+        String sql = "{CALL SP_LEER_ADMINISTRADOR(?)}";
 
         try (Connection con = DBManager.getInstance().getConnection();
              CallableStatement cs = con.prepareCall(sql)) {
@@ -48,9 +48,7 @@ public class AdministradorDAOImpl implements IAdministradorDAO {
 
             try (ResultSet rs = cs.executeQuery()) {
                 if (rs.next()) {
-                    Administrador t = new Administrador();
-                    mapear(rs, t);
-                    return t;
+                    return mapearAdministrador(rs);
                 }
             }
 
@@ -62,23 +60,24 @@ public class AdministradorDAOImpl implements IAdministradorDAO {
     }
 
     @Override
-    public Administrador update(Administrador t, Integer id) {
-        String sql = "{CALL USP_ACTUALIZAR_ADMINISTRADOR(?, ?, ?, ?, ?, ?, ?)}";
+    public Administrador update(Administrador administrador, Integer id) {
+        String sql = "{CALL SP_ACTUALIZAR_ADMINISTRADOR(?, ?, ?, ?, ?, ?, ?)}";
 
         try (Connection con = DBManager.getInstance().getConnection();
              CallableStatement cs = con.prepareCall(sql)) {
 
             cs.setInt(1, id);
-            cs.setString(2, t.getCodigo());
-            cs.setString(3, t.getNombre());
-            cs.setString(4, t.getApellidoPaterno());
-            cs.setString(5, t.getApellidoMaterno());
-            cs.setString(6, t.getDni());
-            cs.setString(7, t.getContrasena());
+            cs.setString(2, administrador.getCodigo());
+            cs.setString(3, administrador.getNombre());
+            cs.setString(4, administrador.getApellidoPaterno());
+            cs.setString(5, administrador.getApellidoMaterno());
+            cs.setString(6, administrador.getDni());
+            cs.setString(7, administrador.getContrasena());
 
             cs.execute();
 
-            return t;
+            administrador.setIdAdministrador(id);
+            return administrador;
 
         } catch (SQLException e) {
             throw new RuntimeException("Error al actualizar administrador", e);
@@ -87,13 +86,12 @@ public class AdministradorDAOImpl implements IAdministradorDAO {
 
     @Override
     public void delete(Integer id) {
-        String sql = "{CALL USP_ELIMINAR_ADMINISTRADOR(?)}";
+        String sql = "{CALL SP_ELIMINAR_ADMINISTRADOR(?)}";
 
         try (Connection con = DBManager.getInstance().getConnection();
              CallableStatement cs = con.prepareCall(sql)) {
 
             cs.setInt(1, id);
-
             cs.execute();
 
         } catch (SQLException e) {
@@ -103,38 +101,34 @@ public class AdministradorDAOImpl implements IAdministradorDAO {
 
     @Override
     public List<Administrador> listAll() {
-        List<Administrador> lista = new ArrayList<>();
-
-        String sql = "{CALL USP_LISTAR_ADMINISTRADORES()}";
+        List<Administrador> administradores = new ArrayList<>();
+        String sql = "{CALL SP_LISTAR_ADMINISTRADORES()}";
 
         try (Connection con = DBManager.getInstance().getConnection();
              CallableStatement cs = con.prepareCall(sql);
              ResultSet rs = cs.executeQuery()) {
 
             while (rs.next()) {
-
-                Administrador t = new Administrador();
-
-                mapear(rs, t);
-
-                lista.add(t);
+                administradores.add(mapearAdministrador(rs));
             }
 
-            return lista;
+            return administradores;
 
         } catch (SQLException e) {
-            throw new RuntimeException("Error en listar administradores", e);
+            throw new RuntimeException("Error al listar administradores", e);
         }
     }
 
-    private void mapear(ResultSet rs, Administrador t) throws SQLException {
-        t.setIdAdministrador(rs.getInt("idAdministrador"));
-        t.setCodigo(rs.getString("codigo"));
-        t.setNombre(rs.getString("nombre"));
-        t.setApellidoPaterno(rs.getString("apellido_paterno"));
-        t.setApellidoMaterno(rs.getString("apellido_materno"));
-        t.setDni(rs.getString("dni"));
-        t.setContrasena(rs.getString("contrasena"));
+    private Administrador mapearAdministrador(ResultSet rs) throws SQLException {
+        Administrador administrador = new Administrador();
+        administrador.setIdAdministrador(rs.getInt("idAdministrador"));
+        administrador.setCodigo(rs.getString("codigo"));
+        administrador.setNombre(rs.getString("nombre"));
+        administrador.setApellidoPaterno(rs.getString("apellido_paterno"));
+        administrador.setApellidoMaterno(rs.getString("apellido_materno"));
+        administrador.setDni(rs.getString("dni"));
+        administrador.setContrasena(rs.getString("contrasena"));
+        return administrador;
     }
 }
 

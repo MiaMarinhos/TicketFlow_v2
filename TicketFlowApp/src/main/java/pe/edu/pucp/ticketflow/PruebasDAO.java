@@ -1,6 +1,8 @@
 package pe.edu.pucp.ticketflow;
-import pe.edu.pucp.ticketflow.banco.model.Banco;
-import pe.edu.pucp.ticketflow.impl.BancoDAOImpl;
+
+
+import pe.edu.pucp.ticketflow.administrador.model.Administrador;
+import pe.edu.pucp.ticketflow.impl.AdministradorDAOImpl;
 
 import java.util.List;
 public class PruebasDAO {
