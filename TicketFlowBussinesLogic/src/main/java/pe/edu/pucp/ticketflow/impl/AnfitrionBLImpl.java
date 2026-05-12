@@ -82,27 +82,5 @@ public class AnfitrionBLImpl implements IAnfitrionBL {
         return anfitrion;
     }
 
-    @Override
-    public Evento crearEvento(Evento evento) throws BusinessLogicException {
-        return evento;
-    }
 
-    @Override
-    public Evento mostrarEvento(Integer id) throws BusinessLogicException {
-        return null;
-    }
-
-    @Override
-    public Evento actualizarEvento(Evento evento, Integer id) throws BusinessLogicException {
-        return evento;
-    }
-
-    @Override
-    public void eliminarEvento() throws BusinessLogicException {
-    }
-
-    @Override
-    public List<Evento> verTodosLosEventos() throws BusinessLogicException {
-        return new ArrayList<>();
-    }
 }

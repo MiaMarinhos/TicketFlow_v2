@@ -1,6 +1,7 @@
 package pe.edu.pucp.ticketflow.evento.model;
 
 import pe.edu.pucp.ticketflow.ubicacion.model.Distrito;
+import pe.edu.pucp.ticketflow.usuario.model.Anfitrion;
 
 import java.sql.Time;
 import java.util.Date;
@@ -21,6 +22,7 @@ public class Evento {
     private double precio;
     private Distrito distrito;
     private int FK_idDistrito;
+    private Anfitrion anfitrion;
     private int idAnfitrion;
     private EstadoPublicacion estadoPublicacion;
     private int FK_idEstadoPublicacion;
@@ -36,7 +38,8 @@ public class Evento {
     public Evento(String titulo,String descripcion,int capacidad_entradas,
                   categoria_evento categoria, Date fecha,Time hora_inicio,Time hora_fin,
                   String ubicacion,String nombre_establecimiento,String img,double precio,
-                  Distrito distrito,int idAnfitrion,EstadoPublicacion estadoPublicacion, EstadoEvento estadoEvento) {
+                  Distrito distrito,int idAnfitrion,EstadoPublicacion estadoPublicacion, EstadoEvento estadoEvento,
+                  Anfitrion anfitrion) {
         this.titulo = titulo;
         this.descripcion = descripcion;
         this.capacidad_entradas = capacidad_entradas;
@@ -53,13 +56,14 @@ public class Evento {
         this.estadoPublicacion = estadoPublicacion;
         this.estadoEvento = estadoEvento;
         this.activo = true;
+        this.anfitrion = anfitrion;
     }
     //este se usa cuando se lee, por eso pasamos "activo" como parametro
     public Evento(int idEvento,String titulo,String descripcion,int capacidad_entradas,
                   int FK_idCategoria_evento, Date fecha,Time hora_inicio,Time hora_fin,
                   String ubicacion,String nombre_establecimiento,String img,double precio,
                   int FK_idDistrito,int idAnfitrion,int FK_idEstadoPublicacion,int FK_idEstadoEvento,
-                  boolean activo) {
+                  boolean activo, Anfitrion anfitrion) {
         this.idEvento = idEvento;
         this.titulo = titulo;
         this.descripcion = descripcion;
@@ -77,6 +81,7 @@ public class Evento {
         this.FK_idEstadoPublicacion = FK_idEstadoPublicacion;
         this.FK_idEstadoEvento = FK_idEstadoEvento;
         this.activo=activo;
+        this.anfitrion = anfitrion;
     }
 
     public int getIdEvento() {
@@ -245,5 +250,13 @@ public class Evento {
 
     public void setFK_idCategoria_evento(int FK_idCategoria_evento) {
         this.FK_idCategoria_evento = FK_idCategoria_evento;
+    }
+
+    public Anfitrion getAnfitrion() {
+        return anfitrion;
+    }
+
+    public void setAnfitrion(Anfitrion anfitrion) {
+        this.anfitrion = anfitrion;
     }
 }
