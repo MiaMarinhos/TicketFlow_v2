@@ -120,4 +120,20 @@ public class UsuarioBLImpl implements IUsuarioBL {
             throw new BusinessLogicException(ex);
         }
     }
+
+    @Override
+    public void editarPerfil() throws BusinessLogicException {
+        System.out.println("Usuario está editando su perfil.");
+    }
+
+    @Override
+    public void buscarEventos() throws BusinessLogicException {
+        System.out.println("Usuario está buscando eventos.");
+    }
+
+    @Override
+    public void enviarSolicitud() throws BusinessLogicException {
+        System.out.println("Usuario está enviando una solicitud.");
+    }
+
 }
