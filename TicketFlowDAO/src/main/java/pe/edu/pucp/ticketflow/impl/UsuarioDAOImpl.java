@@ -13,7 +13,7 @@ public class UsuarioDAOImpl implements IUsuarioDAO {
 
     @Override
     public Usuario create(Usuario t) {
-        String sql = "{CALL USP_INSERTAR_USUARIO(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}";
+        String sql = "{CALL SP_INSERTAR_USUARIO(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}";
         try (Connection con = DBManager.getInstance().getConnection();
              CallableStatement cs = con.prepareCall(sql)) {
 

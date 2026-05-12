@@ -21,7 +21,9 @@ public abstract class Usuario {
     private TipoUsuario tipo;
 
     public int getIdDistrito(){return idDistrito;}
-    public void setIdDistrito(int idDistrito) {}
+    public void setIdDistrito(int idDistrito) {
+        this.idDistrito = idDistrito;
+    }
 
     public Distrito getDistrito() {
         return distrito;
