@@ -6,6 +6,9 @@ USE `ticket_flow`;
 
 --Create
 DELIMITER $$
+
+DROP PROCEDURE IF EXISTS sp_create_compras $$
+
 CREATE PROCEDURE sp_create_compras (
     IN p_idCompras INT,
     IN p_entradas_compradas INT,
@@ -35,6 +38,9 @@ DELIMITER ;
 
 --Read
 DELIMITER $$
+
+DROP PROCEDURE IF EXISTS sp_read_compras $$
+
 CREATE PROCEDURE sp_read_compras (
     IN p_idCompras INT
 )
@@ -50,6 +56,9 @@ DELIMITER ;
 
 --Update
 DELIMITER $$
+
+DROP PROCEDURE IF EXISTS sp_update_compras $$
+
 CREATE PROCEDURE sp_update_compras (
     IN p_idCompras INT,
     IN p_entradas_compradas INT,
@@ -82,6 +91,9 @@ DELIMITER ;
 
 --Delete
 DELIMITER $$
+
+DROP PROCEDURE IF EXISTS sp_delete_compras $$
+
 CREATE PROCEDURE sp_delete_compras (
     IN p_idCompras INT
 )
@@ -93,6 +105,9 @@ DELIMITER ;
 
 --ListAll
 DELIMITER $$
+
+DROP PROCEDURE IF EXISTS sp_listAll_compras $$
+
 CREATE PROCEDURE sp_listAll_compras ()
 BEGIN
 SELECT
@@ -105,6 +120,9 @@ DELIMITER ;
 
 --Listar compras por anfitrion
 DELIMITER $$
+
+DROP PROCEDURE IF EXISTS sp_listar_compras_por_anfitrion $$
+
 CREATE PROCEDURE sp_listar_compras_por_anfitrion(
     IN p_idAnfitrion INT
 )
@@ -117,6 +135,8 @@ DELIMITER ;
 
 --Buscar Compra por Usuario
 DELIMITER $$
+
+DROP PROCEDURE IF EXISTS sp_buscar_compra_usuario $$
 
 CREATE PROCEDURE sp_buscar_compra_usuario(
     IN p_nombre VARCHAR(45)
@@ -142,6 +162,8 @@ DELIMITER ;
 
 DELIMITER $$
 
+DROP PROCEDURE IF EXISTS sp_filtrar_compras_estado $$
+
 CREATE PROCEDURE sp_filtrar_compras_estado(
     IN p_idEstado INT
 )
@@ -159,6 +181,9 @@ DELIMITER ;
 
 --Create
 DELIMITER $$
+
+DROP PROCEDURE IF EXISTS sp_create_estado_compras $$
+
 CREATE PROCEDURE sp_create_estado_compras (
     OUT p_id INT,
     IN p_estado VARCHAR(45)
@@ -176,6 +201,9 @@ DELIMITER ;
 
 --Read
 DELIMITER $$
+
+DROP PROCEDURE IF EXISTS sp_read_estado_compras $$
+
 CREATE PROCEDURE sp_read_estado_compras (
     IN p_idEstado INT
 )
@@ -189,6 +217,9 @@ DELIMITER ;
 
 --Update
 DELIMITER $$
+
+DROP PROCEDURE IF EXISTS sp_update_estado_compras $$
+
 CREATE PROCEDURE sp_update_estado_compras (
     IN p_idEstado INT,
     IN p_estado VARCHAR(45)
@@ -203,6 +234,9 @@ DELIMITER ;
 
 --Delete
 DELIMITER $$
+
+DROP PROCEDURE IF EXISTS sp_delete_estado_compras $$
+
 CREATE PROCEDURE sp_delete_estado_compras (
     IN p_idEstado INT
 )
@@ -214,6 +248,9 @@ DELIMITER ;
 
 --ListAll
 DELIMITER $$
+
+DROP PROCEDURE IF EXISTS sp_listAll_estado_compras $$
+
 CREATE PROCEDURE sp_listAll_estado_compras ()
 BEGIN
 SELECT
@@ -221,6 +258,3 @@ SELECT
 FROM estado_compras;
 END$$
 DELIMITER ;
-
-
-
