@@ -29,13 +29,10 @@ public interface IAnfitrionBL extends IUsuarioBL{
 
     List<Evento> verTodosLosEventos() throws BusinessLogicException;
 
-    void editarPerfilAnfitrion() throws BusinessLogicException;
+    void editarPerfilAnfitrion(Anfitrion anfitrion) throws BusinessLogicException;
 
     List<Compra> verComprasDeSusEventos(Integer idAnfitrion) throws BusinessLogicException;
 
     List<Pago> verPagosDeSusEventos(Integer idAnfitrion) throws BusinessLogicException ;
-
-    void salirModoAnfitrion() throws BusinessLogicException;
-
 
 }
