@@ -87,34 +87,22 @@ public class UsuarioBLImpl implements IUsuarioBL {
     }
 
     @Override
-    public Usuario verPerfil(Integer idUsuario)
-            throws BusinessLogicException {
-
+    public Usuario verPerfil(Integer idUsuario) throws BusinessLogicException {
         try {
-
-            Usuario usuario =
-                    usuarioDAO.read(idUsuario);
+            Usuario usuario = usuarioDAO.read(idUsuario);
 
             if(usuario == null){
-                throw new BusinessLogicException(
-                        "Usuario no encontrado"
-                );
+                throw new BusinessLogicException("Usuario no encontrado");
             }
 
-            String tipo =
-                    usuario.getTipo().getTipoUsuario();
+            String tipo = usuario.getTipo().getTipoUsuario();
             switch (tipo){
-
                 case "CLIENTE":
                     return clienteDAO.read(idUsuario);
-
                 case "ANFITRION":
                     return anfitrionDAO.read(idUsuario);
-
                 default:
-                    throw new BusinessLogicException(
-                            "Tipo de usuario inválido"
-                    );
+                    throw new BusinessLogicException("Tipo de usuario inválido");
             }
 
         } catch(Exception ex){
@@ -147,7 +135,6 @@ public class UsuarioBLImpl implements IUsuarioBL {
             if (nombreEvento == null || nombreEvento.trim().isEmpty()) {
                 throw new BusinessLogicException("Debe ingresar un texto para buscar eventos.");
             }
-
             // Llamamos al DAO para que haga la búsqueda en la BD
             return eventoDAO.buscarPorTitulo(nombreEvento);
 
