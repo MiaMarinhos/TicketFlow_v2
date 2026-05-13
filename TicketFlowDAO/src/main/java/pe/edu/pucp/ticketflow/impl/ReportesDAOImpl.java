@@ -19,8 +19,8 @@ public class ReportesDAOImpl implements IReporteDAO {
         try (Connection con = DBManager.getInstance().getConnection();
              CallableStatement cs = con.prepareCall(sql)) {
 
-            cs.setDate(1, fechaInicio);
-            cs.setDate(2, fechaFin);
+            cs.setDate(1, (java.sql.Date) fechaInicio);
+            cs.setDate(2, (java.sql.Date) fechaFin);
             cs.setInt(3, idCategoria);
 
             try (ResultSet rs = cs.executeQuery()) {
