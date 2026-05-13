@@ -109,7 +109,7 @@ CREATE PROCEDURE sp_listar_compras_por_anfitrion(
     IN p_idAnfitrion INT
 )
 BEGIN
-SELECT c.* FROM compra c
+SELECT c.* FROM compras c
                     INNER JOIN evento e ON c.idEvento = e.idEvento
 WHERE e.idAnfitrion = p_idAnfitrion;
 END$$
