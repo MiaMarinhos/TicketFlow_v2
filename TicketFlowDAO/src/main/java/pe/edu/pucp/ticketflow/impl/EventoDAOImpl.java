@@ -46,9 +46,8 @@ public class EventoDAOImpl implements IEventoDAO {
 
     @Override
     public Evento read(Integer id) {
-// SELECT por ID
-        String sql =
-                "{CALL SP_LEER_EVENTO(?)}";
+
+        String sql = "{CALL SP_LEER_EVENTO(?)}";
 
         try (Connection connection = DBManager.getInstance().getConnection();
              CallableStatement cs = connection.prepareCall(sql)) {
@@ -60,28 +59,7 @@ public class EventoDAOImpl implements IEventoDAO {
                 if (rs.next()) {
 
                     Evento evento = new Evento();
-
-                    evento.setIdEvento(rs.getInt("idEvento"));
-                    evento.setTitulo(rs.getString("titulo"));
-                    evento.setDescripcion(rs.getString("descripcion"));
-                    evento.setCapacidad_entradas(rs.getInt("capacidad_entradas"));
-                    evento.setFecha(rs.getDate("fecha"));
-                    evento.setHora_inicio(rs.getTime("hora_inicio"));
-                    evento.setHora_fin(rs.getTime("hora_fin"));
-                    evento.setUbicacion(rs.getString("ubicacion"));
-                    evento.setNombre_establecimiento(rs.getString("nombre_establecimiento"));
-                    evento.setImg(rs.getString("img"));
-                    evento.setPrecio(rs.getDouble("precio"));
-                    evento.setIdAnfitrion(rs.getInt("idAnfitrion"));
-
-                    evento.setFK_idCategoria_evento(rs.getInt("idCategoria_evento"));
-
-                    evento.setFK_idEstadoPublicacion(rs.getInt("idEstado_publicacion"));
-
-                    evento.setFK_idEstadoEvento(rs.getInt("idEstado_evento"));
-
-                    evento.setFK_idDistrito(rs.getInt("idDistrito"));
-
+                    mapearEvento(rs, evento);
                     return evento;
                 }
             }
@@ -143,49 +121,178 @@ public class EventoDAOImpl implements IEventoDAO {
     }
 
     @Override
-    public List<Evento> listAll(){
-        //SELECT *
-        String sql ="{CALL SP_LISTAR_EVENTOS()}";
+    public List<Evento> listAll() {
 
+        String sql = "{CALL SP_LISTAR_EVENTOS()}";
 
         try (Connection connection = DBManager.getInstance().getConnection();
              CallableStatement cs = connection.prepareCall(sql)) {
 
             try (ResultSet rs = cs.executeQuery()) {
+
                 List<Evento> eventos = new ArrayList<>();
 
                 while (rs.next()) {
 
                     Evento evento = new Evento();
-
-                    evento.setIdEvento(rs.getInt("idEvento"));
-                    evento.setTitulo(rs.getString("titulo"));
-                    evento.setDescripcion(rs.getString("descripcion"));
-                    evento.setCapacidad_entradas(rs.getInt("capacidad_entradas"));
-                    evento.setFecha(rs.getDate("fecha"));
-                    evento.setHora_inicio(rs.getTime("hora_inicio"));
-                    evento.setHora_fin(rs.getTime("hora_fin"));
-                    evento.setUbicacion(rs.getString("ubicacion"));
-                    evento.setNombre_establecimiento(
-                            rs.getString("nombre_establecimiento")
-                    );
-                    evento.setImg(rs.getString("img"));
-                    evento.setPrecio(rs.getDouble("precio"));
-                    evento.setIdAnfitrion(rs.getInt("idAnfitrion"));
-
-                    evento.setFK_idCategoria_evento(rs.getInt("idCategoria_evento"));
-
-                    evento.setFK_idEstadoPublicacion(rs.getInt("idEstado_publicacion"));
-
-                    evento.setFK_idEstadoEvento(rs.getInt("idEstado_evento"));
-                    evento.setFK_idDistrito(rs.getInt("idDistrito"));
-
+                    mapearEvento(rs, evento);
                     eventos.add(evento);
                 }
+
                 return eventos;
             }
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public List<Evento> buscarPorTitulo(String titulo) {
+
+        List<Evento> eventos = new ArrayList<>();
+
+        String sql = "{CALL SP_BUSCAR_EVENTO_TITULO(?)}";
+
+        try (Connection connection = DBManager.getInstance().getConnection();
+             CallableStatement cs = connection.prepareCall(sql)) {
+
+            cs.setString(1, titulo);
+
+            try (ResultSet rs = cs.executeQuery()) {
+
+                while (rs.next()) {
+
+                    Evento evento = new Evento();
+                    mapearEvento(rs, evento);
+                    eventos.add(evento);
+                }
+
+                return eventos;
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Error al buscar eventos por título", e);
+        }
+    }
+
+    @Override
+    public List<Evento> filtrarPorEstado(Integer idEstadoEvento) {
+
+        List<Evento> eventos = new ArrayList<>();
+
+        String sql = "{CALL SP_FILTRAR_EVENTO_ESTADO(?)}";
+
+        try (Connection connection = DBManager.getInstance().getConnection();
+             CallableStatement cs = connection.prepareCall(sql)) {
+
+            cs.setInt(1, idEstadoEvento);
+
+            try (ResultSet rs = cs.executeQuery()) {
+
+                while (rs.next()) {
+
+                    Evento evento = new Evento();
+                    mapearEvento(rs, evento);
+                    eventos.add(evento);
+                }
+
+                return eventos;
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Error al filtrar eventos por estado", e);
+        }
+    }
+
+    @Override
+    public Evento aprobarEvento(Integer idEvento) {
+
+        String sql = "{CALL SP_APROBAR_EVENTO(?)}";
+
+        try (Connection connection = DBManager.getInstance().getConnection();
+             CallableStatement cs = connection.prepareCall(sql)) {
+
+            cs.setInt(1, idEvento);
+
+            cs.execute();
+
+            return read(idEvento);
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Error al aprobar evento", e);
+        }
+    }
+
+    @Override
+    public Evento rechazarEvento(Integer idEvento) {
+
+        String sql = "{CALL SP_RECHAZAR_EVENTO(?)}";
+
+        try (Connection connection = DBManager.getInstance().getConnection();
+             CallableStatement cs = connection.prepareCall(sql)) {
+
+            cs.setInt(1, idEvento);
+
+            cs.execute();
+
+            return read(idEvento);
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Error al rechazar evento", e);
+        }
+    }
+
+    @Override
+    public Evento eliminarEvento(Integer idEvento) {
+
+        String sql = "{CALL SP_ELIMINAR_EVENTO(?)}";
+
+        try (Connection connection = DBManager.getInstance().getConnection();
+             CallableStatement cs = connection.prepareCall(sql)) {
+
+            cs.setInt(1, idEvento);
+
+            cs.execute();
+
+            return read(idEvento);
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Error al eliminar evento", e);
+        }
+    }
+
+    private void mapearEvento(ResultSet rs, Evento evento) throws SQLException {
+
+        evento.setIdEvento(rs.getInt("idEvento"));
+        evento.setTitulo(rs.getString("titulo"));
+        evento.setDescripcion(rs.getString("descripcion"));
+        evento.setCapacidad_entradas(rs.getInt("capacidad_entradas"));
+        evento.setFecha(rs.getDate("fecha"));
+        evento.setHora_inicio(rs.getTime("hora_inicio"));
+        evento.setHora_fin(rs.getTime("hora_fin"));
+        evento.setUbicacion(rs.getString("ubicacion"));
+        evento.setNombre_establecimiento(
+                rs.getString("nombre_establecimiento")
+        );
+        evento.setImg(rs.getString("img"));
+        evento.setPrecio(rs.getDouble("precio"));
+        evento.setIdAnfitrion(rs.getInt("idAnfitrion"));
+
+        evento.setFK_idCategoria_evento(
+                rs.getInt("idCategoria_evento")
+        );
+
+        evento.setFK_idEstadoPublicacion(
+                rs.getInt("idEstado_publicacion")
+        );
+
+        evento.setFK_idEstadoEvento(
+                rs.getInt("idEstado_evento")
+        );
+
+        evento.setFK_idDistrito(
+                rs.getInt("idDistrito")
+        );
     }
 }

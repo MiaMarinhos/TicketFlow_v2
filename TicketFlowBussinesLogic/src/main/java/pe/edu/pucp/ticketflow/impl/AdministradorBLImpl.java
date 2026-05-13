@@ -2,8 +2,10 @@ package pe.edu.pucp.ticketflow.impl;
 
 import pe.edu.pucp.ticketflow.IAdministradorBL;
 import pe.edu.pucp.ticketflow.IAdministradorDAO;
+import pe.edu.pucp.ticketflow.IEventoDAO;
 import pe.edu.pucp.ticketflow.IUsuarioDAO;
 import pe.edu.pucp.ticketflow.administrador.model.Administrador;
+import pe.edu.pucp.ticketflow.evento.model.Evento;
 import pe.edu.pucp.ticketflow.exception.BusinessLogicException;
 import pe.edu.pucp.ticketflow.usuario.model.Usuario;
 
@@ -13,10 +15,12 @@ public class AdministradorBLImpl implements IAdministradorBL {
 
     private final IAdministradorDAO administradorDAO;
     private final IUsuarioDAO usuarioDAO;
+    private final IEventoDAO eventoDAO;
 
     public AdministradorBLImpl() {
         this.administradorDAO = new AdministradorDAOImpl();
         this.usuarioDAO = new UsuarioDAOImpl();
+        this.eventoDAO = new EventoDAOImpl();
     }
 
     @Override
@@ -111,7 +115,7 @@ public class AdministradorBLImpl implements IAdministradorBL {
     }
 
     @Override
-    public List<Usuario> buscarUsuario(String nombre) {
+    public List<Usuario> buscarUsuario(String nombre)  throws BusinessLogicException{
 
         if(nombre == null || nombre.trim().isEmpty()){
             return usuarioDAO.listAll();
@@ -121,7 +125,7 @@ public class AdministradorBLImpl implements IAdministradorBL {
     }
 
     @Override
-    public List<Usuario> filtrarUsuariosPorTipo(Integer idTipoUsuario) {
+    public List<Usuario> filtrarUsuariosPorTipo(Integer idTipoUsuario)  throws BusinessLogicException{
 
         if (idTipoUsuario == null || idTipoUsuario == 0) {
             return usuarioDAO.listAll();
@@ -131,7 +135,7 @@ public class AdministradorBLImpl implements IAdministradorBL {
     }
 
     @Override
-    public List<Usuario> filtrarUsuariosPorEstado(Integer idEstado) {
+    public List<Usuario> filtrarUsuariosPorEstado(Integer idEstado)  throws BusinessLogicException{
 
         if (idEstado == null || idEstado == 0) {
             return usuarioDAO.listAll();
@@ -141,13 +145,13 @@ public class AdministradorBLImpl implements IAdministradorBL {
     }
 
     @Override
-    public Usuario registrarUsuario(Usuario usuario) {
+    public Usuario registrarUsuario(Usuario usuario) throws BusinessLogicException {
         validarDatosUsuario(usuario);
         return usuarioDAO.create(usuario);
     }
 
     @Override
-    public Usuario editarUsuario(Usuario usuario) {
+    public Usuario editarUsuario(Usuario usuario) throws BusinessLogicException {
 
         validarDatosUsuario(usuario);
 
@@ -159,7 +163,7 @@ public class AdministradorBLImpl implements IAdministradorBL {
     }
 
     @Override
-    public Usuario bloquearUsuario(Integer idUsuario) {
+    public Usuario bloquearUsuario(Integer idUsuario) throws BusinessLogicException {
 
         if (idUsuario <= 0) {
             throw new RuntimeException("Debe seleccionar un usuario válido.");
@@ -169,13 +173,105 @@ public class AdministradorBLImpl implements IAdministradorBL {
     }
 
     @Override
-    public Usuario desbloquearUsuario(Integer idUsuario) {
+    public Usuario desbloquearUsuario(Integer idUsuario) throws BusinessLogicException {
 
         if (idUsuario <= 0) {
             throw new RuntimeException("Debe seleccionar un usuario válido.");
         }
 
         return usuarioDAO.desbloquearUsuario(idUsuario);
+    }
+
+    //GESTION DE EVENTOS
+    @Override
+    public List<Evento> listarEventos()  throws BusinessLogicException{
+        return eventoDAO.listAll();
+    }
+
+    @Override
+    public List<Evento> buscarEvento(String titulo) throws BusinessLogicException {
+
+        if (titulo == null || titulo.trim().isEmpty()) {
+            return eventoDAO.listAll();
+        }
+
+        return eventoDAO.buscarPorTitulo(titulo.trim());
+    }
+
+    @Override
+    public List<Evento> filtrarEventosPorEstado(Integer idEstadoEvento) throws BusinessLogicException {
+
+        if (idEstadoEvento == 0) {
+            return eventoDAO.listAll();
+        }
+
+        return eventoDAO.filtrarPorEstado(idEstadoEvento);
+    }
+
+    @Override
+    public Evento detalleEvento(Integer idEvento) throws BusinessLogicException {
+
+        if ( idEvento <= 0) {
+            throw new BusinessLogicException("Debe seleccionar un evento válido.");
+        }
+
+        Evento evento = eventoDAO.read(idEvento);
+
+        if (evento == null) {
+            throw new BusinessLogicException("No se encontró el evento seleccionado.");
+        }
+
+        return evento;
+    }
+
+    @Override
+    public Evento registrarEvento(Evento evento) throws BusinessLogicException {
+
+        validarDatosEvento(evento);
+
+        return eventoDAO.create(evento);
+    }
+
+    @Override
+    public Evento editarEvento(Evento evento) throws BusinessLogicException {
+
+        validarDatosEvento(evento);
+
+        if (evento.getIdEvento() <= 0) {
+            throw new BusinessLogicException("Debe seleccionar un evento válido para editar.");
+        }
+
+        return eventoDAO.update(evento, evento.getIdEvento());
+    }
+
+    @Override
+    public Evento aprobarEvento(Integer idEvento)throws BusinessLogicException {
+
+        if (idEvento <= 0) {
+            throw new BusinessLogicException("Debe seleccionar un evento válido.");
+        }
+
+        return eventoDAO.aprobarEvento(idEvento);
+    }
+
+    @Override
+    public Evento rechazarEvento(Integer idEvento)throws BusinessLogicException {
+
+        if (idEvento <= 0) {
+            throw new BusinessLogicException("Debe seleccionar un evento válido.");
+        }
+
+        return eventoDAO.rechazarEvento(idEvento);
+    }
+
+    @Override
+    public Evento eliminarEvento(Integer idEvento) throws BusinessLogicException {
+
+        if (idEvento <= 0) {
+            throw new BusinessLogicException("Debe seleccionar un evento válido.");
+        }
+
+        return eventoDAO.eliminarEvento(idEvento);
     }
 
     @Override
@@ -202,13 +298,6 @@ public class AdministradorBLImpl implements IAdministradorBL {
         System.out.println("Generando reporte...");
     }
 
-
-
-    @Override
-    public void listarEventos() throws BusinessLogicException {
-        // Pendiente: aquí se usará EventoDAO.
-        System.out.println("Listando eventos...");
-    }
 
     @Override
     public void publicarEvento() throws BusinessLogicException {
@@ -291,6 +380,49 @@ public class AdministradorBLImpl implements IAdministradorBL {
 
         if (usuario.getContrasena() == null || usuario.getContrasena().trim().isEmpty()) {
             throw new RuntimeException("La contraseña es obligatoria.");
+        }
+    }
+
+    private void validarDatosEvento(Evento evento) throws BusinessLogicException {
+
+        if (evento == null) {
+            throw new BusinessLogicException("Debe ingresar los datos del evento.");
+        }
+
+        if (evento.getTitulo() == null || evento.getTitulo().trim().isEmpty()) {
+            throw new BusinessLogicException("El título del evento es obligatorio.");
+        }
+
+        if (evento.getCapacidad_entradas() <= 0) {
+            throw new BusinessLogicException("La capacidad debe ser mayor a cero.");
+        }
+
+        if (evento.getFecha() == null) {
+            throw new BusinessLogicException("La fecha del evento es obligatoria.");
+        }
+
+        if (evento.getHora_inicio() == null) {
+            throw new BusinessLogicException("La hora de inicio es obligatoria.");
+        }
+
+        if (evento.getHora_fin() == null) {
+            throw new BusinessLogicException("La hora de fin es obligatoria.");
+        }
+
+        if (evento.getPrecio() < 0) {
+            throw new BusinessLogicException("El precio no puede ser negativo.");
+        }
+
+        if (evento.getFK_idCategoria_evento() <= 0) {
+            throw new BusinessLogicException("Debe seleccionar una categoría.");
+        }
+
+        if (evento.getFK_idDistrito() <= 0) {
+            throw new BusinessLogicException("Debe seleccionar un distrito.");
+        }
+
+        if (evento.getIdAnfitrion() <= 0) {
+            throw new BusinessLogicException("Debe seleccionar un anfitrión.");
         }
     }
 
