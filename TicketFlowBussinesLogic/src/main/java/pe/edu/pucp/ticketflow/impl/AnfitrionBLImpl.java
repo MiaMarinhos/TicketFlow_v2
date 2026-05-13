@@ -27,29 +27,7 @@ public class AnfitrionBLImpl extends UsuarioBLImpl implements IAnfitrionBL {
     @Override
     public Anfitrion registrarAnfitrion(Anfitrion anfitrion) throws BusinessLogicException {
         try {
-            if (anfitrion == null) {
-                throw new BusinessLogicException("El anfitrión no puede ser nulo.");
-            }
-
-            if (anfitrion.getIdUsuario() <= 0) {
-                throw new BusinessLogicException("Primero debe crearse el usuario antes de registrar el anfitrión.");
-            }
-
-            if (anfitrion.getBanco() == null || anfitrion.getBanco().getId() <= 0) {
-                throw new BusinessLogicException("El anfitrión debe tener un banco válido.");
-            }
-
-            if (anfitrion.getRazonSocial() == null || anfitrion.getRazonSocial().isBlank()) {
-                throw new BusinessLogicException("La razón social del anfitrión es obligatoria.");
-            }
-
-            if (anfitrion.getRuc() == null || anfitrion.getRuc().isBlank()) {
-                throw new BusinessLogicException("El RUC del anfitrión es obligatorio.");
-            }
-
-            if (anfitrion.getCuentaBancaria() == null || anfitrion.getCuentaBancaria().isBlank()) {
-                throw new BusinessLogicException("La cuenta bancaria del anfitrión es obligatoria.");
-            }
+            validarDatosBaseAnfitrion(anfitrion);
 
             return anfitrionDAO.create(anfitrion);
 
@@ -84,18 +62,9 @@ public class AnfitrionBLImpl extends UsuarioBLImpl implements IAnfitrionBL {
 
     @Override
     public Anfitrion actualizarAnfitrion(Anfitrion anfitrion, Integer idAnfitrion) throws BusinessLogicException {
+        // Este metodo es para el administrador
         try {
-            if (anfitrion == null) {
-                throw new BusinessLogicException("El anfitrión no puede ser nulo.");
-            }
-
-            if (idAnfitrion == null || idAnfitrion <= 0) {
-                throw new BusinessLogicException("El ID del anfitrión debe ser válido.");
-            }
-
-            if (anfitrion.getBanco() == null || anfitrion.getBanco().getId() <= 0) {
-                throw new BusinessLogicException("El anfitrión debe tener un banco válido.");
-            }
+            validarDatosBaseAnfitrion(anfitrion);
 
             return anfitrionDAO.update(anfitrion, idAnfitrion);
 
@@ -219,8 +188,21 @@ public class AnfitrionBLImpl extends UsuarioBLImpl implements IAnfitrionBL {
     }
 
     @Override
-    public void editarPerfilAnfitrion() throws BusinessLogicException {
-        System.out.println("Anfitrión está editando su perfil.");
+    public void editarPerfilAnfitrion(Anfitrion anfitrion) throws BusinessLogicException {
+        //  Este metodo es para el usuario final
+        try {
+            validarDatosBaseAnfitrion(anfitrion);
+
+            // Usamos el ID del usuario del mismo objeto anfitrión
+            anfitrionDAO.update(anfitrion, anfitrion.getIdUsuario());
+
+            System.out.println("Perfil del anfitrión con ID " + anfitrion.getIdUsuario() + " actualizado con éxito.");
+
+        } catch (BusinessLogicException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new BusinessLogicException("Error al editar el perfil del anfitrión: " + e.getMessage());
+        }
     }
 
     @Override
@@ -249,12 +231,7 @@ public class AnfitrionBLImpl extends UsuarioBLImpl implements IAnfitrionBL {
         }
     }
 
-    @Override
-    public void salirModoAnfitrion() throws BusinessLogicException {
-        System.out.println("Anfitrión salió del modo anfitrión.");
-    }
-
-    // ESTOS 4 SON DE USUARIO
+    // ESTOS 3 SON DE USUARIO
     @Override
     public void editarPerfil() throws BusinessLogicException {
         System.out.println("Usuario está editando su perfil.");
@@ -268,6 +245,30 @@ public class AnfitrionBLImpl extends UsuarioBLImpl implements IAnfitrionBL {
     @Override
     public void enviarSolicitud() throws BusinessLogicException {
         System.out.println("Usuario está enviando una solicitud.");
+    }
+
+    // --- MÓDULO DE VALIDACIONES REUTILIZABLES ---
+    private void validarDatosBaseAnfitrion(Anfitrion anfitrion) throws BusinessLogicException {
+        // 1. Validaciones comunes para todos (Admin, Usuario, Registro)
+        if (anfitrion == null) {
+            throw new BusinessLogicException("El anfitrión no puede ser nulo.");
+        }
+        if (anfitrion.getIdUsuario() <= 0) {
+            throw new BusinessLogicException("El ID del anfitrión debe ser válido.");
+        }
+        if (anfitrion.getRazonSocial() == null || anfitrion.getRazonSocial().isBlank()) {
+            throw new BusinessLogicException("La razón social del anfitrión es obligatoria.");
+        }
+        if (anfitrion.getCuentaBancaria() == null || anfitrion.getCuentaBancaria().isBlank()) {
+            throw new BusinessLogicException("La cuenta bancaria del anfitrión es obligatoria.");
+        }
+        // 2. Validaciones más estrictas (Ej: para registros nuevos o actualizaciones de Admin)
+        if (anfitrion.getBanco() == null || anfitrion.getBanco().getId() <= 0) {
+            throw new BusinessLogicException("El anfitrión debe tener un banco válido.");
+        }
+        if (anfitrion.getRuc() == null || anfitrion.getRuc().isBlank()) {
+            throw new BusinessLogicException("El RUC del anfitrión es obligatorio.");
+        }
     }
 
 }

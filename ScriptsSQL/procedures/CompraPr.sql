@@ -109,10 +109,48 @@ CREATE PROCEDURE sp_listar_compras_por_anfitrion(
     IN p_idAnfitrion INT
 )
 BEGIN
-SELECT c.* FROM compra c
+SELECT c.* FROM compras c
                     INNER JOIN evento e ON c.idEvento = e.idEvento
 WHERE e.idAnfitrion = p_idAnfitrion;
 END$$
+DELIMITER ;
+
+--Buscar Compra por Usuario
+DELIMITER $$
+
+CREATE PROCEDURE sp_buscar_compra_usuario(
+    IN p_nombre VARCHAR(45)
+)
+BEGIN
+
+SELECT
+    c.*,
+    u.nombre,
+    e.titulo
+FROM compras c
+         INNER JOIN usuario u
+                    ON c.idCliente = u.idUsuario
+         INNER JOIN evento e
+                    ON c.idEvento = e.idEvento
+WHERE u.nombre LIKE CONCAT('%', p_nombre, '%');
+
+END$$
+
+DELIMITER ;
+
+-- Filtrar Compras Por Estado
+
+DELIMITER $$
+
+CREATE PROCEDURE sp_filtrar_compras_estado(
+    IN p_idEstado INT
+)
+BEGIN
+SELECT *
+FROM compras
+WHERE idEstado = p_idEstado;
+END$$
+
 DELIMITER ;
 
 -----------------------------------
@@ -183,4 +221,6 @@ SELECT
 FROM estado_compras;
 END$$
 DELIMITER ;
+
+
 

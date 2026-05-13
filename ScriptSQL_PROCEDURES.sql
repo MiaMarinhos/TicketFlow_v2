@@ -10,28 +10,28 @@ CREATE PROCEDURE SP_INSERTAR_USUARIO(OUT p_idUsuario INT, IN p_dni VARCHAR(45), 
     IN p_fecha_nacimiento DATE, IN p_idDistrito INT, IN p_idEstado INT, IN p_tipo INT
 )
 BEGIN
-    INSERT INTO usuario (dni, nombre, apellido_paterno, apellido_materno, telefono, 
-                         correo_electronico, contrasena, fecha_registro, fecha_nacimiento, 
+    INSERT INTO usuario (dni, nombre, apellido_paterno, apellido_materno, telefono,
+                         correo_electronico, contrasena, fecha_registro, fecha_nacimiento,
                          idDistrito, idEstado)
-    VALUES (p_dni, p_nombre, p_apellido_paterno, p_apellido_materno, p_telefono, 
-            p_correo_electronico, p_contrasena, p_fecha_registro, p_fecha_nacimiento, 
+    VALUES (p_dni, p_nombre, p_apellido_paterno, p_apellido_materno, p_telefono,
+            p_correo_electronico, p_contrasena, p_fecha_registro, p_fecha_nacimiento,
             p_idDistrito, p_idEstado);
-    
+
     SET p_idUsuario = LAST_INSERT_ID();
-    
+
     INSERT INTO usuario_X_tipo (idUsuario, idTipo_usuario)
     VALUES (p_idUsuario, p_tipo);
-    
+
 END //
 
 CREATE PROCEDURE SP_LEER_USUARIO(IN p_idUsuario INT)
 BEGIN
-    SELECT 
-        u.*,                               
-        e.idEstado_usuario,                
-        e.estado AS nombre_estado,         
-        tu.idTipo_usuario,                 
-        tu.nombre AS nombre_tipo_usuario  
+    SELECT
+        u.*,
+        e.idEstado_usuario,
+        e.estado AS nombre_estado,
+        tu.idTipo_usuario,
+        tu.nombre AS nombre_tipo_usuario
     FROM usuario u
     INNER JOIN estado_usuario e ON u.idEstado = e.idEstado_usuario
     INNER JOIN usuario_x_tipo uxt ON u.idUsuario = uxt.idUsuario
@@ -53,7 +53,7 @@ CREATE PROCEDURE SP_ACTUALIZAR_USUARIO(
     IN p_idEstado INT
 )
 BEGIN
-    UPDATE usuario SET 
+    UPDATE usuario SET
         dni = p_dni, nombre = p_nombre, apellido_paterno = p_apellido_paterno,
         apellido_materno = p_apellido_materno, telefono = p_telefono,
         correo_electronico = p_correo_electronico, contrasena = p_contrasena,
@@ -64,7 +64,7 @@ END //
 CREATE PROCEDURE SP_ELIMINAR_USUARIO(IN p_idUsuario INT)
 BEGIN
     -- Asumiendo que en la tabla estado_usuario existe el nombre 'ELIMINADO'
-    UPDATE usuario 
+    UPDATE usuario
     SET idEstado = (SELECT idEstado_usuario FROM estado_usuario WHERE estado = 'ELIMINADO' LIMIT 1)
     WHERE idUsuario = p_idUsuario;
 END //
@@ -72,12 +72,12 @@ END //
 CREATE PROCEDURE SP_LISTAR_USUARIOS()
 BEGIN
     SELECT * FROM usuario;
-    SELECT 
-        u.*,                               
-        e.idEstado_usuario,                
-        e.estado AS nombre_estado,         
-        tu.idTipo_usuario,                 
-        tu.nombre AS nombre_tipo_usuario  
+    SELECT
+        u.*,
+        e.idEstado_usuario,
+        e.estado AS nombre_estado,
+        tu.idTipo_usuario,
+        tu.nombre AS nombre_tipo_usuario
     FROM usuario u
     INNER JOIN estado_usuario e ON u.idEstado = e.idEstado_usuario
     INNER JOIN usuario_x_tipo uxt ON u.idUsuario = uxt.idUsuario

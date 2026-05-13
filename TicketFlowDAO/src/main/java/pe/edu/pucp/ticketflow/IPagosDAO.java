@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface IPagosDAO extends IBaseDAO<Pago, Integer> {
     List<Pago> listarPagosPorAnfitrion(Integer idAnfitrion);
+    List<Pago> buscarPorUsuario(String nombre);
+    List<Pago> filtrarPorEstado(Integer idEstado);
 }

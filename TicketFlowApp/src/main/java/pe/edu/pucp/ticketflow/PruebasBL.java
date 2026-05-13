@@ -1,109 +1,49 @@
 package pe.edu.pucp.ticketflow;
 import pe.edu.pucp.ticketflow.administrador.model.Administrador;
+import pe.edu.pucp.ticketflow.evento.model.Evento;
 import pe.edu.pucp.ticketflow.exception.BusinessLogicException;
 import pe.edu.pucp.ticketflow.impl.AdministradorBLImpl;
+import pe.edu.pucp.ticketflow.impl.EventoBLImpl;
 
-import pe.edu.pucp.ticketflow.impl.ClienteBLImpl;
-import pe.edu.pucp.ticketflow.impl.ClienteDAOImpl;
-import pe.edu.pucp.ticketflow.impl.UsuarioDAOImpl;
-import pe.edu.pucp.ticketflow.ubicacion.model.Distrito;
-import pe.edu.pucp.ticketflow.usuario.model.Cliente;
-import pe.edu.pucp.ticketflow.usuario.model.EstadoUsuario;
-import pe.edu.pucp.ticketflow.usuario.model.TipoUsuario;
-import pe.edu.pucp.ticketflow.usuario.model.Usuario;
-
-import java.sql.Date;
 import java.util.List;
-public class PruebasBL {
-    static void main(){
-        try {
-            UsuarioDAOImpl usuarioDAO = new UsuarioDAOImpl();
-            ClienteBLImpl clienteBL = new ClienteBLImpl();
+public class PruebasBL  {
+    static void main() throws BusinessLogicException{
+        IEventoBL eventoBL = new EventoBLImpl();
+        Evento evento = new Evento();
+        evento.setIdEvento(1);
 
-            EstadoUsuario estado = new EstadoUsuario();
-            estado.setIdEstadoUsuario(1); // ACTIVO
+        evento.setTitulo("Concierto de Rock Nacional");
+        evento.setDescripcion("Festival en vivo con bandas peruanas");
+        evento.setCapacidad_entradas(500);
 
-            TipoUsuario tipo = new TipoUsuario();
-            tipo.setIdTipoUsuario(1); // CLIENTE
+        evento.setFecha(
+                java.sql.Date.valueOf("2026-06-20")
+        );
 
-            Distrito distrito = new Distrito();
-            distrito.setIdDistrito(1); // San Miguel
+        evento.setHora_inicio(
+                java.sql.Time.valueOf("19:00:00")
+        );
 
-            Cliente cliente = new Cliente();
-            cliente.setDni("88888888");
-            cliente.setNombre("Cliente");
-            cliente.setApellidoPaterno("Prueba");
-            cliente.setApellidoMaterno("BL");
-            cliente.setTelefono("977777777");
-            cliente.setCorreoElectronico("cliente.bl@test.com");
-            cliente.setContrasena("123456");
-            cliente.setFechaRegistro(new Date(System.currentTimeMillis()));
-            cliente.setFechaNacimiento(Date.valueOf("2004-01-01"));
-            cliente.setEstado(estado);
-            cliente.setTipo(tipo);
-            cliente.setDistrito(distrito);
-            cliente.setIdDistrito(1);
-            cliente.setPuntosBonus(0);
+        evento.setHora_fin(
+                java.sql.Time.valueOf("23:30:00")
+        );
 
-            System.out.println("=== CREANDO USUARIO PARA CLIENTE ===");
+        evento.setUbicacion("Av. Arequipa 1450");
+        evento.setNombre_establecimiento("Arena Lima");
+        evento.setImg("evento_rock.jpg");
 
-            usuarioDAO.create(cliente);
-            System.out.println("Usuario creado con ID: " + cliente.getIdUsuario());
+        evento.setPrecio(120.50);
 
-            System.out.println("=== REGISTRANDO CLIENTE DESDE BL ===");
-            clienteBL.registrarCliente(cliente);
-            System.out.println("Cliente registrado correctamente.");
+        evento.setFK_idDistrito(15);
 
-            System.out.println("=== BUSCANDO CLIENTE DESDE BL ===");
-            Cliente encontrado = clienteBL.buscarClientePorId(cliente.getIdUsuario());
-            System.out.println("ID: " + encontrado.getIdUsuario());
-            System.out.println("Nombre: " + encontrado.getNombre());
-            System.out.println("Correo: " + encontrado.getCorreoElectronico());
-            System.out.println("Puntos: " + encontrado.getPuntosBonus());
+        evento.setIdAnfitrion(3);
 
-            System.out.println("=== ACTUALIZANDO CLIENTE DESDE BL ===");
-            encontrado.setNombre("Cliente BL Actualizado");
-            encontrado.setTelefono("966666666");
-            encontrado.setPuntosBonus(100);
+        evento.setFK_idCategoria_evento(2);
 
-            clienteBL.actualizarCliente(encontrado, encontrado.getIdUsuario());
+        evento.setFK_idEstadoPublicacion(1);
 
-            Cliente actualizado = clienteBL.buscarClientePorId(encontrado.getIdUsuario());
-            System.out.println("Nombre actualizado: " + actualizado.getNombre());
-            System.out.println("Telefono actualizado: " + actualizado.getTelefono());
-            System.out.println("Puntos actualizados: " + actualizado.getPuntosBonus());
+        evento.setFK_idEstadoEvento(1);
 
-            System.out.println("=== LISTANDO CLIENTES DESDE BL ===");
-            List<Cliente> clientes = clienteBL.listarClientes();
-
-            for (Cliente c : clientes) {
-                System.out.println(
-                        c.getIdUsuario() + " - " +
-                                c.getNombre() + " - " +
-                                c.getCorreoElectronico() + " - " +
-                                c.getPuntosBonus() + " puntos"
-                );
-            }
-
-            System.out.println("=== ACCIONES CONCEPTUALES DE CLIENTE ===");
-            clienteBL.verPerfil();
-            clienteBL.editarPerfil();
-            clienteBL.comprarEntradas();
-            clienteBL.pagarEntrada();
-            clienteBL.descargarEntradas();
-            clienteBL.solicitarSerAnfitrion();
-
-            System.out.println("=== ELIMINANDO CLIENTE DESDE BL ===");
-            clienteBL.eliminarCliente(cliente.getIdUsuario());
-            System.out.println("Cliente eliminado correctamente.");
-
-            System.out.println("=== PRUEBA BL CLIENTE TERMINADA ===");
-
-        } catch (BusinessLogicException e) {
-            System.out.println("Error de lógica de negocio: " + e.getMessage());
-        } catch (Exception e) {
-            System.out.println("Error inesperado: " + e.getMessage());
-            e.printStackTrace();
-        }
+        eventoBL.crearEvento(evento);
     }
 }

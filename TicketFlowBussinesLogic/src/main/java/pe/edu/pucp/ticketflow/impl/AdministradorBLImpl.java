@@ -2,8 +2,10 @@ package pe.edu.pucp.ticketflow.impl;
 
 import pe.edu.pucp.ticketflow.*;
 import pe.edu.pucp.ticketflow.administrador.model.Administrador;
+import pe.edu.pucp.ticketflow.compra.model.Compra;
 import pe.edu.pucp.ticketflow.evento.model.Evento;
 import pe.edu.pucp.ticketflow.exception.BusinessLogicException;
+import pe.edu.pucp.ticketflow.pago.model.Pago;
 import pe.edu.pucp.ticketflow.solicitud.model.Solicitud;
 import pe.edu.pucp.ticketflow.usuario.model.Usuario;
 
@@ -15,12 +17,16 @@ public class AdministradorBLImpl implements IAdministradorBL {
     private final IUsuarioDAO usuarioDAO;
     private final IEventoDAO eventoDAO;
     private final ISolicitudesDAO solicitudesDAO;
+    private final IPagosDAO pagosDAO;
+    private final ICompraDAO compraDAO;
 
     public AdministradorBLImpl() {
         this.administradorDAO = new AdministradorDAOImpl();
         this.usuarioDAO = new UsuarioDAOImpl();
         this.eventoDAO = new EventoDAOImpl();
         this.solicitudesDAO = new SolicitudesDAOImpl();
+        this.pagosDAO = new PagosDAOImpl();
+        this.compraDAO = new CompraDAOImpl();
     }
 
     @Override
@@ -374,6 +380,91 @@ public class AdministradorBLImpl implements IAdministradorBL {
         }
 
         solicitudesDAO.delete(idSolicitud);
+    }
+
+    //Gestion de Pagos
+    @Override
+    public List<Pago> listarPagos() throws BusinessLogicException {
+        return pagosDAO.listAll();
+    }
+
+    @Override
+    public List<Pago> buscarPago(String nombre) throws BusinessLogicException {
+
+        if (nombre == null || nombre.trim().isEmpty()) {
+            return pagosDAO.listAll();
+        }
+
+        return pagosDAO.buscarPorUsuario(nombre.trim());
+    }
+
+    @Override
+    public List<Pago> filtrarPagosPorEstado(Integer idEstado) throws BusinessLogicException {
+
+        if (idEstado == null || idEstado == 0) {
+            return pagosDAO.listAll();
+        }
+
+        return pagosDAO.filtrarPorEstado(idEstado);
+    }
+
+    @Override
+    public Pago detallePago(Integer idPago) throws BusinessLogicException {
+
+        if (idPago == null || idPago <= 0) {
+            throw new BusinessLogicException("Debe seleccionar un pago válido.");
+        }
+
+        Pago pago = pagosDAO.read(idPago);
+
+        if (pago == null) {
+            throw new BusinessLogicException("No se encontró el pago seleccionado.");
+        }
+
+        return pago;
+    }
+
+    //GESTION DE COMPRAS
+    @Override
+    public List<Compra> listarCompras() throws BusinessLogicException {
+
+        return compraDAO.listAll();
+    }
+
+    @Override
+    public List<Compra> buscarCompra(String nombre) throws BusinessLogicException {
+
+        if (nombre == null || nombre.trim().isEmpty()) {
+            return compraDAO.listAll();
+        }
+
+        return compraDAO.buscarPorUsuario(nombre.trim());
+    }
+
+    @Override
+    public List<Compra> filtrarComprasPorEstado(Integer idEstado) throws BusinessLogicException {
+
+        if (idEstado == null || idEstado == 0) {
+            return compraDAO.listAll();
+        }
+
+        return compraDAO.filtrarPorEstado(idEstado);
+    }
+
+    @Override
+    public Compra detalleCompra(Integer idCompra) throws BusinessLogicException {
+
+        if (idCompra == null || idCompra <= 0) {
+            throw new BusinessLogicException("Debe seleccionar una compra válida.");
+        }
+
+        Compra compra = compraDAO.read(idCompra);
+
+        if (compra == null) {
+            throw new BusinessLogicException("No se encontró la compra seleccionada.");
+        }
+
+        return compra;
     }
 
 
