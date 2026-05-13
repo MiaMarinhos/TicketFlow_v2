@@ -231,22 +231,6 @@ public class AnfitrionBLImpl extends UsuarioBLImpl implements IAnfitrionBL {
         }
     }
 
-    // ESTOS 3 SON DE USUARIO
-    @Override
-    public void editarPerfil() throws BusinessLogicException {
-        System.out.println("Usuario está editando su perfil.");
-    }
-
-    @Override
-    public void buscarEventos() throws BusinessLogicException {
-        System.out.println("Usuario está buscando eventos.");
-    }
-
-    @Override
-    public void enviarSolicitud() throws BusinessLogicException {
-        System.out.println("Usuario está enviando una solicitud.");
-    }
-
     // --- MÓDULO DE VALIDACIONES REUTILIZABLES ---
     private void validarDatosBaseAnfitrion(Anfitrion anfitrion) throws BusinessLogicException {
         // 1. Validaciones comunes para todos (Admin, Usuario, Registro)
