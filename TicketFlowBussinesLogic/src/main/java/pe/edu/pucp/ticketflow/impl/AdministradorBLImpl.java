@@ -2,6 +2,7 @@ package pe.edu.pucp.ticketflow.impl;
 
 import pe.edu.pucp.ticketflow.*;
 import pe.edu.pucp.ticketflow.administrador.model.Administrador;
+import pe.edu.pucp.ticketflow.compra.model.Compra;
 import pe.edu.pucp.ticketflow.evento.model.Evento;
 import pe.edu.pucp.ticketflow.exception.BusinessLogicException;
 import pe.edu.pucp.ticketflow.pago.model.Pago;
@@ -17,6 +18,7 @@ public class AdministradorBLImpl implements IAdministradorBL {
     private final IEventoDAO eventoDAO;
     private final ISolicitudesDAO solicitudesDAO;
     private final IPagosDAO pagosDAO;
+    private final ICompraDAO compraDAO;
 
     public AdministradorBLImpl() {
         this.administradorDAO = new AdministradorDAOImpl();
@@ -24,6 +26,7 @@ public class AdministradorBLImpl implements IAdministradorBL {
         this.eventoDAO = new EventoDAOImpl();
         this.solicitudesDAO = new SolicitudesDAOImpl();
         this.pagosDAO = new PagosDAOImpl();
+        this.compraDAO = new CompraDAOImpl();
     }
 
     @Override
@@ -419,6 +422,49 @@ public class AdministradorBLImpl implements IAdministradorBL {
         }
 
         return pago;
+    }
+
+    //GESTION DE COMPRAS
+    @Override
+    public List<Compra> listarCompras() throws BusinessLogicException {
+
+        return compraDAO.listAll();
+    }
+
+    @Override
+    public List<Compra> buscarCompra(String nombre) throws BusinessLogicException {
+
+        if (nombre == null || nombre.trim().isEmpty()) {
+            return compraDAO.listAll();
+        }
+
+        return compraDAO.buscarPorUsuario(nombre.trim());
+    }
+
+    @Override
+    public List<Compra> filtrarComprasPorEstado(Integer idEstado) throws BusinessLogicException {
+
+        if (idEstado == null || idEstado == 0) {
+            return compraDAO.listAll();
+        }
+
+        return compraDAO.filtrarPorEstado(idEstado);
+    }
+
+    @Override
+    public Compra detalleCompra(Integer idCompra) throws BusinessLogicException {
+
+        if (idCompra == null || idCompra <= 0) {
+            throw new BusinessLogicException("Debe seleccionar una compra válida.");
+        }
+
+        Compra compra = compraDAO.read(idCompra);
+
+        if (compra == null) {
+            throw new BusinessLogicException("No se encontró la compra seleccionada.");
+        }
+
+        return compra;
     }
 
 

@@ -122,6 +122,63 @@ public class CompraDAOImpl implements ICompraDAO{
         }
     }
 
+    @Override
+    public List<Compra> buscarPorUsuario(String nombre) {
+
+        List<Compra> lista = new ArrayList<>();
+
+        String sql = "{CALL sp_buscar_compra_usuario(?)}";
+
+        try (Connection con = DBManager.getInstance().getConnection();
+             CallableStatement cs = con.prepareCall(sql)) {
+
+            cs.setString(1, nombre);
+
+            try (ResultSet rs = cs.executeQuery()) {
+
+                while(rs.next()) {
+
+                    Compra t = new Compra();
+                    mapear(rs, t);
+                    lista.add(t);
+                }
+
+                return lista;
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Error al buscar compras", e);
+        }
+    }
+
+    @Override
+    public List<Compra> filtrarPorEstado(Integer idEstado) {
+
+        List<Compra> lista = new ArrayList<>();
+
+        String sql = "{CALL sp_filtrar_compras_estado(?)}";
+
+        try (Connection con = DBManager.getInstance().getConnection();
+             CallableStatement cs = con.prepareCall(sql)) {
+
+            cs.setInt(1, idEstado);
+
+            try (ResultSet rs = cs.executeQuery()) {
+
+                while (rs.next()) {
+                    Compra t = new Compra();
+                    mapear(rs, t);
+                    lista.add(t);
+                }
+
+                return lista;
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Error al filtrar compras por estado", e);
+        }
+    }
+
     private void mapear(ResultSet rs, Compra t) throws SQLException{
         t.setIdCompra(rs.getInt("idCompras"));
         t.setEntradasCompradas(rs.getInt("entradas_compradas"));

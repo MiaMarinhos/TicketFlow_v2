@@ -1,6 +1,7 @@
 package pe.edu.pucp.ticketflow;
 
 import pe.edu.pucp.ticketflow.administrador.model.Administrador;
+import pe.edu.pucp.ticketflow.compra.model.Compra;
 import pe.edu.pucp.ticketflow.evento.model.Evento;
 import pe.edu.pucp.ticketflow.exception.BusinessLogicException;
 import pe.edu.pucp.ticketflow.pago.model.Pago;
@@ -54,4 +55,12 @@ public interface IAdministradorBL {
     List<Pago> buscarPago(String nombre) throws BusinessLogicException;
     List<Pago> filtrarPagosPorEstado(Integer idEstado) throws BusinessLogicException;
     Pago detallePago(Integer idPago) throws BusinessLogicException;
+
+    //GESTION DE COMPRAS
+    List<Compra> listarCompras() throws BusinessLogicException;
+    List<Compra> buscarCompra(String nombre) throws BusinessLogicException;
+    List<Compra> filtrarComprasPorEstado(Integer idEstado) throws BusinessLogicException;
+    Compra detalleCompra(Integer idCompra) throws BusinessLogicException;
+
+    
 }
