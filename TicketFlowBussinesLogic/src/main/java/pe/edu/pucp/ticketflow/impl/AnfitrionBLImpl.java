@@ -81,7 +81,6 @@ public class AnfitrionBLImpl extends UsuarioBLImpl implements IAnfitrionBL {
             if (idAnfitrion == null || idAnfitrion <= 0) {
                 throw new BusinessLogicException("El ID del anfitrión debe ser válido.");
             }
-
             anfitrionDAO.delete(idAnfitrion);
 
         } catch (BusinessLogicException e) {
@@ -106,11 +105,9 @@ public class AnfitrionBLImpl extends UsuarioBLImpl implements IAnfitrionBL {
             if (evento == null) {
                 throw new BusinessLogicException("El evento no puede ser nulo.");
             }
-
             if (evento.getIdAnfitrion() <= 0) {
                 throw new BusinessLogicException("El evento debe estar asociado a un anfitrión válido.");
             }
-
             return eventoDAO.create(evento);
 
         } catch (BusinessLogicException e) {
@@ -126,7 +123,6 @@ public class AnfitrionBLImpl extends UsuarioBLImpl implements IAnfitrionBL {
             if (idEvento == null || idEvento <= 0) {
                 throw new BusinessLogicException("El ID del evento debe ser válido.");
             }
-
             Evento evento = eventoDAO.read(idEvento);
 
             if (evento == null) {
@@ -134,7 +130,6 @@ public class AnfitrionBLImpl extends UsuarioBLImpl implements IAnfitrionBL {
             }
 
             return evento;
-
         } catch (BusinessLogicException e) {
             throw e;
         } catch (Exception e) {
@@ -193,7 +188,6 @@ public class AnfitrionBLImpl extends UsuarioBLImpl implements IAnfitrionBL {
         try {
             validarDatosBaseAnfitrion(anfitrion);
 
-            // Usamos el ID del usuario del mismo objeto anfitrión
             anfitrionDAO.update(anfitrion, anfitrion.getIdUsuario());
 
             System.out.println("Perfil del anfitrión con ID " + anfitrion.getIdUsuario() + " actualizado con éxito.");
@@ -211,7 +205,6 @@ public class AnfitrionBLImpl extends UsuarioBLImpl implements IAnfitrionBL {
             if (idAnfitrion == null || idAnfitrion <= 0) {
                 throw new BusinessLogicException("El ID del anfitrión debe ser válido.");
             }
-            // Aquí llamas al DAO que a su vez ejecutará el CallableStatement (Procedure con el JOIN)
             return compraDAO.listarComprasPorAnfitrion(idAnfitrion);
         } catch (Exception e) {
             throw new BusinessLogicException("Error al visualizar las compras: " + e.getMessage());
@@ -224,7 +217,6 @@ public class AnfitrionBLImpl extends UsuarioBLImpl implements IAnfitrionBL {
             if (idAnfitrion == null || idAnfitrion <= 0) {
                 throw new BusinessLogicException("El ID del anfitrión debe ser válido.");
             }
-            // Llamas al DAO correspondiente
             return pagoDAO.listarPagosPorAnfitrion(idAnfitrion);
         } catch (Exception e) {
             throw new BusinessLogicException("Error al visualizar los pagos: " + e.getMessage());
