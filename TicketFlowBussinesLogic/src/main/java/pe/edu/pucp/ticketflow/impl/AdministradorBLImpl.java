@@ -9,6 +9,7 @@ import pe.edu.pucp.ticketflow.pago.model.Pago;
 import pe.edu.pucp.ticketflow.solicitud.model.Solicitud;
 import pe.edu.pucp.ticketflow.usuario.model.Usuario;
 
+import java.util.Date;
 import java.util.List;
 
 public class AdministradorBLImpl implements IAdministradorBL {
@@ -19,6 +20,7 @@ public class AdministradorBLImpl implements IAdministradorBL {
     private final ISolicitudesDAO solicitudesDAO;
     private final IPagosDAO pagosDAO;
     private final ICompraDAO compraDAO;
+    private final IReporteDAO reportesDAO;
 
     public AdministradorBLImpl() {
         this.administradorDAO = new AdministradorDAOImpl();
@@ -27,6 +29,7 @@ public class AdministradorBLImpl implements IAdministradorBL {
         this.solicitudesDAO = new SolicitudesDAOImpl();
         this.pagosDAO = new PagosDAOImpl();
         this.compraDAO = new CompraDAOImpl();
+        this.reportesDAO = new ReportesDAOImpl();
     }
 
     @Override
@@ -465,6 +468,40 @@ public class AdministradorBLImpl implements IAdministradorBL {
         }
 
         return compra;
+    }
+
+    //GESTION DE REPORTES
+    @Override
+    public List<Object[]> generarReporteVentas(Date fechaInicio, Date fechaFin, Integer idCategoria)
+            throws BusinessLogicException {
+
+        if (fechaInicio == null || fechaFin == null) {
+            throw new BusinessLogicException("Debe seleccionar un rango de fechas.");
+        }
+
+        if (fechaInicio.after(fechaFin)) {
+            throw new BusinessLogicException("La fecha de inicio no puede ser mayor que la fecha fin.");
+        }
+
+        if (idCategoria == null) {
+            idCategoria = 0;
+        }
+
+        return reportesDAO.reporteVentas(fechaInicio, fechaFin, idCategoria);
+    }
+
+    @Override
+    public List<Object[]> generarReporteFidelizacion()
+            throws BusinessLogicException {
+
+        return reportesDAO.reporteFidelizacion();
+    }
+
+    @Override
+    public List<Object[]> generarReporteOcupacionEventos()
+            throws BusinessLogicException {
+
+        return reportesDAO.reporteOcupacionEventos();
     }
 
 

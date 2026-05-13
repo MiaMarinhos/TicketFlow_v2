@@ -8,6 +8,7 @@ import pe.edu.pucp.ticketflow.pago.model.Pago;
 import pe.edu.pucp.ticketflow.solicitud.model.Solicitud;
 import pe.edu.pucp.ticketflow.usuario.model.Usuario;
 
+import java.util.Date;
 import java.util.List;
 
 public interface IAdministradorBL {
@@ -62,5 +63,8 @@ public interface IAdministradorBL {
     List<Compra> filtrarComprasPorEstado(Integer idEstado) throws BusinessLogicException;
     Compra detalleCompra(Integer idCompra) throws BusinessLogicException;
 
-    
+    //Gestion de Reportes
+    List<Object[]> generarReporteVentas(Date fechaInicio, Date fechaFin, Integer idCategoria) throws BusinessLogicException;
+    List<Object[]> generarReporteFidelizacion() throws BusinessLogicException;
+    List<Object[]> generarReporteOcupacionEventos() throws BusinessLogicException;
 }
