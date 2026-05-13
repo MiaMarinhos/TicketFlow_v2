@@ -2,17 +2,21 @@ package pe.edu.pucp.ticketflow.impl;
 
 import pe.edu.pucp.ticketflow.IAdministradorBL;
 import pe.edu.pucp.ticketflow.IAdministradorDAO;
+import pe.edu.pucp.ticketflow.IUsuarioDAO;
 import pe.edu.pucp.ticketflow.administrador.model.Administrador;
 import pe.edu.pucp.ticketflow.exception.BusinessLogicException;
+import pe.edu.pucp.ticketflow.usuario.model.Usuario;
 
 import java.util.List;
 
 public class AdministradorBLImpl implements IAdministradorBL {
 
     private final IAdministradorDAO administradorDAO;
+    private final IUsuarioDAO usuarioDAO;
 
     public AdministradorBLImpl() {
         this.administradorDAO = new AdministradorDAOImpl();
+        this.usuarioDAO = new UsuarioDAOImpl();
     }
 
     @Override
@@ -100,6 +104,79 @@ public class AdministradorBLImpl implements IAdministradorBL {
             throw new BusinessLogicException(ex);
         }
     }
+    //GESTION DE USUARIOS
+    @Override
+    public List<Usuario> listarUsuarios() throws BusinessLogicException {
+        return usuarioDAO.listAll();
+    }
+
+    @Override
+    public List<Usuario> buscarUsuario(String nombre) {
+
+        if(nombre == null || nombre.trim().isEmpty()){
+            return usuarioDAO.listAll();
+        }
+
+        return usuarioDAO.buscarPorNombre(nombre.trim());
+    }
+
+    @Override
+    public List<Usuario> filtrarUsuariosPorTipo(Integer idTipoUsuario) {
+
+        if (idTipoUsuario == null || idTipoUsuario == 0) {
+            return usuarioDAO.listAll();
+        }
+
+        return usuarioDAO.filtrarPorTipo(idTipoUsuario);
+    }
+
+    @Override
+    public List<Usuario> filtrarUsuariosPorEstado(Integer idEstado) {
+
+        if (idEstado == null || idEstado == 0) {
+            return usuarioDAO.listAll();
+        }
+
+        return usuarioDAO.filtrarPorEstado(idEstado);
+    }
+
+    @Override
+    public Usuario registrarUsuario(Usuario usuario) {
+        validarDatosUsuario(usuario);
+        return usuarioDAO.create(usuario);
+    }
+
+    @Override
+    public Usuario editarUsuario(Usuario usuario) {
+
+        validarDatosUsuario(usuario);
+
+        if ( usuario.getIdUsuario() <= 0) {
+            throw new RuntimeException("Debe seleccionar un usuario válido para editar.");
+        }
+
+        return usuarioDAO.update(usuario, usuario.getIdUsuario());
+    }
+
+    @Override
+    public Usuario bloquearUsuario(Integer idUsuario) {
+
+        if (idUsuario <= 0) {
+            throw new RuntimeException("Debe seleccionar un usuario válido.");
+        }
+
+        return usuarioDAO.bloquearUsuario(idUsuario);
+    }
+
+    @Override
+    public Usuario desbloquearUsuario(Integer idUsuario) {
+
+        if (idUsuario <= 0) {
+            throw new RuntimeException("Debe seleccionar un usuario válido.");
+        }
+
+        return usuarioDAO.desbloquearUsuario(idUsuario);
+    }
 
     @Override
     public void verSolicitudes() throws BusinessLogicException {
@@ -125,11 +202,7 @@ public class AdministradorBLImpl implements IAdministradorBL {
         System.out.println("Generando reporte...");
     }
 
-    @Override
-    public void listarUsuarios() throws BusinessLogicException {
-        // Pendiente: aquí se usará UsuarioDAO.
-        System.out.println("Listando usuarios...");
-    }
+
 
     @Override
     public void listarEventos() throws BusinessLogicException {
@@ -183,6 +256,41 @@ public class AdministradorBLImpl implements IAdministradorBL {
                 administrador.getDni().length() > 45 ||
                 administrador.getContrasena().length() > 45) {
             throw new BusinessLogicException("Los campos del administrador no pueden superar 45 caracteres.");
+        }
+    }
+
+    private void validarDatosUsuario(Usuario usuario) {
+
+        if (usuario == null) {
+            throw new RuntimeException("Debe ingresar los datos del usuario.");
+        }
+
+        if (usuario.getDni() == null || usuario.getDni().trim().isEmpty()) {
+            throw new RuntimeException("El DNI es obligatorio.");
+        }
+
+        if (usuario.getNombre() == null || usuario.getNombre().trim().isEmpty()) {
+            throw new RuntimeException("El nombre es obligatorio.");
+        }
+
+        if (usuario.getApellidoPaterno() == null || usuario.getApellidoPaterno().trim().isEmpty()) {
+            throw new RuntimeException("El apellido paterno es obligatorio.");
+        }
+
+        if (usuario.getApellidoMaterno() == null || usuario.getApellidoMaterno().trim().isEmpty()) {
+            throw new RuntimeException("El apellido materno es obligatorio.");
+        }
+
+        if (usuario.getTelefono() == null || usuario.getTelefono().trim().isEmpty()) {
+            throw new RuntimeException("El teléfono es obligatorio.");
+        }
+
+        if (usuario.getCorreoElectronico() == null || usuario.getCorreoElectronico().trim().isEmpty()) {
+            throw new RuntimeException("El correo electrónico es obligatorio.");
+        }
+
+        if (usuario.getContrasena() == null || usuario.getContrasena().trim().isEmpty()) {
+            throw new RuntimeException("La contraseña es obligatoria.");
         }
     }
 

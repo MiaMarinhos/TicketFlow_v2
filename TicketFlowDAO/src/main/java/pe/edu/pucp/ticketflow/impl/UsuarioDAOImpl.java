@@ -130,6 +130,164 @@ public class UsuarioDAOImpl implements IUsuarioDAO {
         return lista;
     }
 
+    @Override
+    public List<Usuario> buscarPorNombre(String nombre) {
+
+        List<Usuario> usuarios = new ArrayList<>();
+
+        String sql = "{CALL SP_BUSCAR_USUARIO_NOMBRE(?)}";
+
+        try (Connection con = DBManager.getInstance().getConnection();
+             CallableStatement cs = con.prepareCall(sql)) {
+
+            cs.setString(1, nombre);
+
+            try (ResultSet rs = cs.executeQuery()) {
+
+                while (rs.next()) {
+
+                    Usuario u;
+                    int tipo = rs.getInt("idTipo_usuario");
+                    switch (tipo) {
+                        case 1:
+                            u = new Cliente();
+                            break;
+
+                        case 2:
+                            u = new Anfitrion();
+                            break;
+
+                        default:
+                            u = new Cliente();
+                            break;
+                    }
+
+                    mapearUsuario(rs, u);
+                    usuarios.add(u);
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error al buscar usuarios por nombre", e);
+        }
+        return usuarios;
+    }
+
+    @Override
+    public List<Usuario> filtrarPorTipo(Integer idTipoUsuario) {
+
+        List<Usuario> usuarios = new ArrayList<>();
+
+        String sql = "{CALL SP_FILTRAR_USUARIO_TIPO(?)}";
+
+        try (Connection con = DBManager.getInstance().getConnection();
+             CallableStatement cs = con.prepareCall(sql)) {
+
+            cs.setInt(1, idTipoUsuario);
+            try (ResultSet rs = cs.executeQuery()) {
+                while (rs.next()) {
+                    Usuario u;
+                    int tipo = rs.getInt("idTipo_usuario");
+                    switch (tipo) {
+                        case 1:
+                            u = new Cliente();
+                            break;
+                        case 2:
+                            u = new Anfitrion();
+                            break;
+                        default:
+                            u = new Cliente();
+                            break;
+                    }
+                    mapearUsuario(rs, u);
+                    usuarios.add(u);
+                }
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Error al filtrar usuarios por tipo", e);
+        }
+        return usuarios;
+    }
+
+    @Override
+    public List<Usuario> filtrarPorEstado(Integer idEstado) {
+
+        List<Usuario> usuarios = new ArrayList<>();
+
+        String sql = "{CALL SP_FILTRAR_USUARIO_ESTADO(?)}";
+
+        try (Connection con = DBManager.getInstance().getConnection();
+             CallableStatement cs = con.prepareCall(sql)) {
+
+            cs.setInt(1, idEstado);
+
+            try (ResultSet rs = cs.executeQuery()) {
+
+                while (rs.next()) {
+
+                    Usuario u;
+                    int tipo = rs.getInt("idTipo_usuario");
+
+                    switch (tipo) {
+                        case 1:
+                            u = new Cliente();
+                            break;
+                        case 2:
+                            u = new Anfitrion();
+                            break;
+
+                        default:
+                            u = new Cliente();
+                            break;
+                    }
+                    mapearUsuario(rs, u);
+                    usuarios.add(u);
+                }
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Error al filtrar usuarios por estado", e);
+        }
+        return usuarios;
+    }
+
+    @Override
+    public Usuario bloquearUsuario(Integer idUsuario) {
+
+        String sql = "{CALL SP_BLOQUEAR_USUARIO(?)}";
+
+        try (Connection con = DBManager.getInstance().getConnection();
+             CallableStatement cs = con.prepareCall(sql)) {
+
+            cs.setInt(1, idUsuario);
+
+            cs.execute();
+
+            return read(idUsuario);
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Error al bloquear usuario", e);
+        }
+    }
+
+    @Override
+    public Usuario desbloquearUsuario(Integer idUsuario) {
+
+        String sql = "{CALL SP_DESBLOQUEAR_USUARIO(?)}";
+
+        try (Connection con = DBManager.getInstance().getConnection();
+             CallableStatement cs = con.prepareCall(sql)) {
+
+            cs.setInt(1, idUsuario);
+
+            cs.execute();
+
+            return read(idUsuario);
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Error al desbloquear usuario", e);
+        }
+    }
 
     private void mapearUsuario(ResultSet rs, Usuario u) throws SQLException {
         u.setIdUsuario(rs.getInt("idUsuario"));
