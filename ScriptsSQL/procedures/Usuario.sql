@@ -1,3 +1,4 @@
+USE `ticket_flow` ;
 -----------------------------------
 --USUARIO
 -----------------------------------
@@ -161,6 +162,7 @@ END //
 
 DELIMITER ;
 
+DELIMITER //
 DROP PROCEDURE IF EXISTS SP_LEER_TIPO_USUARIO //
 CREATE PROCEDURE SP_LEER_TIPO_USUARIO(IN p_idTipoUsuario INT)
 BEGIN
