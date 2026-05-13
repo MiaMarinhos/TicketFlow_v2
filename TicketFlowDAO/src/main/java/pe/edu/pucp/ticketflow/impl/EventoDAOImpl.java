@@ -246,7 +246,7 @@ public class EventoDAOImpl implements IEventoDAO {
     @Override
     public Evento eliminarEvento(Integer idEvento) {
 
-        String sql = "{CALL SP_ELIMINAR_EVENTO(?)}";
+        String sql = "{CALL SP_ELIMINAR_EVENTO_ESTADO(?)}";
 
         try (Connection connection = DBManager.getInstance().getConnection();
              CallableStatement cs = connection.prepareCall(sql)) {

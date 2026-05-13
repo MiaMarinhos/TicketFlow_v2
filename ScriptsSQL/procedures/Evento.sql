@@ -1,3 +1,4 @@
+USE `ticket_flow` ;
 -----------------------------------
 --EVENTO
 -----------------------------------
@@ -207,7 +208,7 @@ DELIMITER ;
 -- Eliminar Evento como Estado
 DELIMITER $$
 
-CREATE PROCEDURE SP_ELIMINAR_EVENTO(
+CREATE PROCEDURE SP_ELIMINAR_EVENTO_ESTADO(
     IN p_idEvento INT
 )
 BEGIN

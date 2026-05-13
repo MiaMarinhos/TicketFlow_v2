@@ -1,11 +1,14 @@
 package pe.edu.pucp.ticketflow.impl;
 
 import pe.edu.pucp.ticketflow.*;
+import pe.edu.pucp.ticketflow.evento.model.Evento;
 import pe.edu.pucp.ticketflow.exception.BusinessLogicException;
+import pe.edu.pucp.ticketflow.solicitud.model.Solicitud;
 import pe.edu.pucp.ticketflow.ubicacion.model.Distrito;
 import pe.edu.pucp.ticketflow.usuario.model.*;
 
 import java.util.Date;
+import java.util.List;
 
 public class UsuarioBLImpl implements IUsuarioBL {
 
@@ -15,6 +18,8 @@ public class UsuarioBLImpl implements IUsuarioBL {
     private IEstadoUsuarioDAO estadoUsuarioDAO = new EstadoUsuarioDAOImpl();
     private IClienteDAO clienteDAO = new ClienteDAOImpl();
     private IAnfitrionDAO anfitrionDAO = new AnfitrionDAOImpl();
+    private IEventoDAO eventoDAO = new EventoDAOImpl();
+    private ISolicitudesDAO solicitudesDAO = new SolicitudesDAOImpl();
 
     @Override
     public Usuario registrarUsuario(Usuario usuario) throws BusinessLogicException{
@@ -122,18 +127,61 @@ public class UsuarioBLImpl implements IUsuarioBL {
     }
 
     @Override
-    public void editarPerfil() throws BusinessLogicException {
-        System.out.println("Usuario está editando su perfil.");
+    public void editarPerfil(Usuario usuario) throws BusinessLogicException {
+        try {
+            if (usuario == null || usuario.getIdUsuario() <= 0) {
+                throw new BusinessLogicException("Datos de usuario inválidos para editar perfil.");
+            }
+            // Llama al DAO para actualizar los datos base del usuario
+            usuarioDAO.update(usuario, usuario.getIdUsuario());
+
+        } catch (Exception e) {
+            throw new BusinessLogicException("Error al editar perfil base: " + e.getMessage());
+        }
     }
 
     @Override
-    public void buscarEventos() throws BusinessLogicException {
-        System.out.println("Usuario está buscando eventos.");
+    public List<Evento> buscarEventos(String nombreEvento) throws BusinessLogicException {
+        try {
+            // Validamos que el usuario haya escrito algo para buscar
+            if (nombreEvento == null || nombreEvento.trim().isEmpty()) {
+                throw new BusinessLogicException("Debe ingresar un texto para buscar eventos.");
+            }
+
+            // Llamamos al DAO para que haga la búsqueda en la BD
+            return eventoDAO.buscarPorTitulo(nombreEvento);
+
+        } catch (BusinessLogicException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new BusinessLogicException("Error al buscar eventos: " + e.getMessage());
+        }
     }
 
     @Override
-    public void enviarSolicitud() throws BusinessLogicException {
-        System.out.println("Usuario está enviando una solicitud.");
+    public void enviarSolicitud(Solicitud solicitud) throws BusinessLogicException {
+        try {
+            // Validar que el objeto exista
+            if (solicitud == null) {
+                throw new BusinessLogicException("La solicitud a enviar no puede estar vacía.");
+            }
+            if (solicitud.getMotivo() == null || solicitud.getMotivo().trim().isEmpty()) {
+                throw new BusinessLogicException("El motivo de la solicitud es obligatorio.");
+            }
+            if (solicitud.getCorreoContacto() == null || solicitud.getCorreoContacto().trim().isEmpty()) {
+                throw new BusinessLogicException("Debe proporcionar un correo de contacto.");
+            }
+            if (solicitud.getIdCliente() <= 0) {
+                throw new BusinessLogicException("La solicitud debe estar asociada a un cliente válido.");
+            }
+            // Guardamos la solicitud en la base de datos llamando al procedure USP_INSERTAR_SOLICITUD
+            solicitudesDAO.create(solicitud);
+
+        } catch (BusinessLogicException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new BusinessLogicException("Error al enviar la solicitud: " + e.getMessage());
+        }
     }
 
 }
