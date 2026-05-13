@@ -217,3 +217,69 @@ FROM solicitudes;
 END$$
 
 DELIMITER ;
+
+-- Buscar Solicitud por Nombre
+DELIMITER $$
+
+CREATE PROCEDURE USP_BUSCAR_SOLICITUD_NOMBRE(
+    IN p_nombre VARCHAR(45)
+)
+BEGIN
+
+SELECT
+    s.*,
+    u.nombre,
+    u.apellido_paterno,
+    u.correo_electronico
+FROM solicitudes s
+         INNER JOIN usuario u
+                    ON s.idUsuario = u.idUsuario
+WHERE u.nombre LIKE CONCAT('%', p_nombre, '%');
+
+END$$
+
+DELIMITER ;
+
+-- Filtrar Por Estado
+DELIMITER $$
+
+CREATE PROCEDURE USP_FILTRAR_SOLICITUD_ESTADO(
+    IN p_idEstado INT
+)
+BEGIN
+SELECT *
+FROM solicitudes
+WHERE idEstado = p_idEstado;
+END$$
+
+DELIMITER ;
+
+-- Aprobar Solicitud
+DELIMITER $$
+
+CREATE PROCEDURE USP_APROBAR_SOLICITUD(
+    IN p_idSolicitud INT
+)
+BEGIN
+UPDATE solicitudes
+SET idEstado = 2
+WHERE idSolicitudes = p_idSolicitud;
+END$$
+
+DELIMITER ;
+
+-- Rechazar Solicitud
+DELIMITER $$
+
+CREATE PROCEDURE USP_RECHAZAR_SOLICITUD(
+    IN p_idSolicitud INT
+)
+BEGIN
+
+UPDATE solicitudes
+SET idEstado = 3
+WHERE idSolicitudes = p_idSolicitud;
+
+END$$
+
+DELIMITER ;

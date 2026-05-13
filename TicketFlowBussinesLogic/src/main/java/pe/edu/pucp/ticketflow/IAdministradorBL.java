@@ -3,21 +3,12 @@ package pe.edu.pucp.ticketflow;
 import pe.edu.pucp.ticketflow.administrador.model.Administrador;
 import pe.edu.pucp.ticketflow.evento.model.Evento;
 import pe.edu.pucp.ticketflow.exception.BusinessLogicException;
+import pe.edu.pucp.ticketflow.solicitud.model.Solicitud;
 import pe.edu.pucp.ticketflow.usuario.model.Usuario;
 
 import java.util.List;
 
 public interface IAdministradorBL {
-
-    // ACCIONES PROPIAS DEL ADMINISTRADOR DENTRO DEL SISTEMA:
-
-    void verSolicitudes() throws BusinessLogicException;
-    void responderSolicitudes() throws BusinessLogicException;
-    void editarCuentasDeUsuarios() throws BusinessLogicException;
-    void generarReporte() throws BusinessLogicException;
-    // void listarUsuarios() throws BusinessLogicException;
-    // void listarEventos() throws BusinessLogicException;
-    void publicarEvento() throws BusinessLogicException;
 
     // CRUD BASICO DEL ADMINISTRADOR:
     Administrador registrarAdministrador(Administrador administrador) throws BusinessLogicException;
@@ -46,4 +37,15 @@ public interface IAdministradorBL {
     Evento aprobarEvento(Integer idEvento) throws BusinessLogicException;
     Evento rechazarEvento(Integer idEvento) throws BusinessLogicException;
     Evento eliminarEvento(Integer idEvento) throws BusinessLogicException;
+
+    //GESTION DE SOLICITUDES
+    List<Solicitud> listarSolicitudes() throws BusinessLogicException;
+    List<Solicitud> buscarSolicitud(String nombre) throws BusinessLogicException;
+    List<Solicitud> filtrarSolicitudesPorEstado(Integer idEstado) throws BusinessLogicException;
+    Solicitud detalleSolicitud(Integer idSolicitud) throws BusinessLogicException;
+    Solicitud editarSolicitud(Solicitud solicitud) throws BusinessLogicException;
+    Solicitud aprobarSolicitud(Integer idSolicitud) throws BusinessLogicException;
+    Solicitud rechazarSolicitud(Integer idSolicitud) throws BusinessLogicException;
+    void eliminarSolicitud(Integer idSolicitud) throws BusinessLogicException;
+
 }

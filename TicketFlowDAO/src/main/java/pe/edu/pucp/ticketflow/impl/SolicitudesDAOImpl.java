@@ -128,6 +128,104 @@ public class SolicitudesDAOImpl implements ISolicitudesDAO {
         }
     }
 
+    @Override
+    public List<Solicitud> buscarPorNombre(String nombre) {
+
+        List<Solicitud> lista = new ArrayList<>();
+
+        String sql = "{CALL USP_BUSCAR_SOLICITUD_NOMBRE(?)}";
+
+        try (Connection con = DBManager.getInstance().getConnection();
+             CallableStatement cs = con.prepareCall(sql)) {
+
+            cs.setString(1, nombre);
+
+            try (ResultSet rs = cs.executeQuery()) {
+
+                while (rs.next()) {
+
+                    Solicitud t = new Solicitud();
+                    mapear(rs, t);
+                    lista.add(t);
+                }
+
+                return lista;
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(
+                    "Error al buscar solicitudes",
+                    e
+            );
+        }
+    }
+
+    @Override
+    public List<Solicitud> filtrarPorEstado(Integer idEstado) {
+
+        List<Solicitud> lista = new ArrayList<>();
+
+        String sql = "{CALL USP_FILTRAR_SOLICITUD_ESTADO(?)}";
+
+        try (Connection con = DBManager.getInstance().getConnection();
+             CallableStatement cs = con.prepareCall(sql)) {
+
+            cs.setInt(1, idEstado);
+
+            try (ResultSet rs = cs.executeQuery()) {
+
+                while (rs.next()) {
+
+                    Solicitud t = new Solicitud();
+                    mapear(rs, t);
+                    lista.add(t);
+                }
+
+                return lista;
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Error al filtrar solicitudes por estado", e);
+        }
+    }
+
+    @Override
+    public Solicitud aprobarSolicitud(Integer idSolicitud) {
+
+        String sql = "{CALL USP_APROBAR_SOLICITUD(?)}";
+
+        try (Connection con = DBManager.getInstance().getConnection();
+             CallableStatement cs = con.prepareCall(sql)) {
+
+            cs.setInt(1, idSolicitud);
+            cs.execute();
+
+            return read(idSolicitud);
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Error al aprobar solicitud", e);
+        }
+    }
+
+    @Override
+    public Solicitud rechazarSolicitud(Integer idSolicitud) {
+
+        String sql = "{CALL USP_RECHAZAR_SOLICITUD(?)}";
+
+        try (Connection con = DBManager.getInstance().getConnection();
+             CallableStatement cs = con.prepareCall(sql)) {
+
+            cs.setInt(1, idSolicitud);
+
+            cs.execute();
+
+            return read(idSolicitud);
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Error al rechazar solicitud", e);
+        }
+    }
+
     private void mapear(ResultSet rs, Solicitud t) throws SQLException {
 
         t.setIdSolicitudes(rs.getInt("idSolicitudes"));

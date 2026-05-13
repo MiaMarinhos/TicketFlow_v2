@@ -1,12 +1,10 @@
 package pe.edu.pucp.ticketflow.impl;
 
-import pe.edu.pucp.ticketflow.IAdministradorBL;
-import pe.edu.pucp.ticketflow.IAdministradorDAO;
-import pe.edu.pucp.ticketflow.IEventoDAO;
-import pe.edu.pucp.ticketflow.IUsuarioDAO;
+import pe.edu.pucp.ticketflow.*;
 import pe.edu.pucp.ticketflow.administrador.model.Administrador;
 import pe.edu.pucp.ticketflow.evento.model.Evento;
 import pe.edu.pucp.ticketflow.exception.BusinessLogicException;
+import pe.edu.pucp.ticketflow.solicitud.model.Solicitud;
 import pe.edu.pucp.ticketflow.usuario.model.Usuario;
 
 import java.util.List;
@@ -16,11 +14,13 @@ public class AdministradorBLImpl implements IAdministradorBL {
     private final IAdministradorDAO administradorDAO;
     private final IUsuarioDAO usuarioDAO;
     private final IEventoDAO eventoDAO;
+    private final ISolicitudesDAO solicitudesDAO;
 
     public AdministradorBLImpl() {
         this.administradorDAO = new AdministradorDAOImpl();
         this.usuarioDAO = new UsuarioDAOImpl();
         this.eventoDAO = new EventoDAOImpl();
+        this.solicitudesDAO = new SolicitudesDAOImpl();
     }
 
     @Override
@@ -274,36 +274,109 @@ public class AdministradorBLImpl implements IAdministradorBL {
         return eventoDAO.eliminarEvento(idEvento);
     }
 
+    //GESTION DE SOLICITUDES
     @Override
-    public void verSolicitudes() throws BusinessLogicException {
-        // Pendiente: aquí se usará SolicitudDAO cuando esa capa esté completa.
-        System.out.println("Mostrando solicitudes pendientes...");
+    public List<Solicitud> listarSolicitudes() throws BusinessLogicException {
+        return solicitudesDAO.listAll();
     }
 
     @Override
-    public void responderSolicitudes() throws BusinessLogicException {
-        // Pendiente: aquí se usará SolicitudDAO para aprobar/rechazar solicitudes.
-        System.out.println("Respondiendo solicitudes...");
+    public List<Solicitud> buscarSolicitud(String nombre) throws BusinessLogicException {
+
+        if (nombre == null || nombre.trim().isEmpty()) {
+            return solicitudesDAO.listAll();
+        }
+
+        return solicitudesDAO.buscarPorNombre(nombre.trim());
     }
 
     @Override
-    public void editarCuentasDeUsuarios() throws BusinessLogicException {
-        // Pendiente: aquí se usará UsuarioDAO/ClienteDAO/AnfitrionDAO.
-        System.out.println("Editando cuentas de usuarios...");
+    public List<Solicitud> filtrarSolicitudesPorEstado(Integer idEstado) throws BusinessLogicException {
+
+        if (idEstado == 0) {
+            return solicitudesDAO.listAll();
+        }
+
+        return solicitudesDAO.filtrarPorEstado(idEstado);
     }
 
     @Override
-    public void generarReporte() throws BusinessLogicException {
-        // Pendiente: aquí se podrían consultar ventas, pagos, eventos, etc.
-        System.out.println("Generando reporte...");
-    }
+    public Solicitud detalleSolicitud(Integer idSolicitud)
+            throws BusinessLogicException {
 
+        if (idSolicitud <= 0) {
+            throw new BusinessLogicException("Debe seleccionar una solicitud válida.");
+        }
+
+        Solicitud solicitud = solicitudesDAO.read(idSolicitud);
+
+        if (solicitud == null) {
+            throw new BusinessLogicException("No se encontró la solicitud seleccionada.");
+        }
+
+        return solicitud;
+    }
 
     @Override
-    public void publicarEvento() throws BusinessLogicException {
-        // Pendiente: aquí se usará EventoDAO o EstadoPublicacionDAO.
-        System.out.println("Publicando evento...");
+    public Solicitud editarSolicitud(Solicitud solicitud) throws BusinessLogicException {
+
+        validarDatosSolicitud(solicitud);
+
+        if (solicitud.getIdSolicitudes() <= 0) {
+            throw new BusinessLogicException(
+                    "Debe seleccionar una solicitud válida para editar."
+            );
+        }
+
+        return solicitudesDAO.update(
+                solicitud,
+                solicitud.getIdSolicitudes()
+        );
     }
+
+    @Override
+    public Solicitud aprobarSolicitud(Integer idSolicitud) throws BusinessLogicException {
+
+        if (idSolicitud == null || idSolicitud <= 0) {
+            throw new BusinessLogicException("Debe seleccionar una solicitud válida.");
+        }
+
+        return solicitudesDAO.aprobarSolicitud(idSolicitud);
+    }
+
+    @Override
+    public Solicitud rechazarSolicitud(Integer idSolicitud) throws BusinessLogicException {
+
+        if (idSolicitud == null || idSolicitud <= 0) {
+            throw new BusinessLogicException(
+                    "Debe seleccionar una solicitud válida."
+            );
+        }
+
+        return solicitudesDAO.rechazarSolicitud(idSolicitud);
+    }
+
+    @Override
+    public void eliminarSolicitud(Integer idSolicitud) throws BusinessLogicException {
+
+        if (idSolicitud == null || idSolicitud <= 0) {
+            throw new BusinessLogicException(
+                    "Debe seleccionar una solicitud válida."
+            );
+        }
+
+        Solicitud solicitud = solicitudesDAO.read(idSolicitud);
+
+        if (solicitud == null) {
+            throw new BusinessLogicException(
+                    "La solicitud no existe."
+            );
+        }
+
+        solicitudesDAO.delete(idSolicitud);
+    }
+
+
 
     private void validarAdministrador(Administrador administrador) throws BusinessLogicException {
         if (administrador == null) {
@@ -423,6 +496,40 @@ public class AdministradorBLImpl implements IAdministradorBL {
 
         if (evento.getIdAnfitrion() <= 0) {
             throw new BusinessLogicException("Debe seleccionar un anfitrión.");
+        }
+    }
+
+    private void validarDatosSolicitud(Solicitud solicitud)
+            throws BusinessLogicException {
+
+        if (solicitud == null) {
+            throw new BusinessLogicException(
+                    "Debe ingresar los datos de la solicitud."
+            );
+        }
+
+        if (solicitud.getTelefonoContacto() == null ||
+                solicitud.getTelefonoContacto().trim().isEmpty()) {
+
+            throw new BusinessLogicException(
+                    "El teléfono de contacto es obligatorio."
+            );
+        }
+
+        if (solicitud.getCorreoContacto() == null ||
+                solicitud.getCorreoContacto().trim().isEmpty()) {
+
+            throw new BusinessLogicException(
+                    "El correo de contacto es obligatorio."
+            );
+        }
+
+        if (solicitud.getMotivo() == null ||
+                solicitud.getMotivo().trim().isEmpty()) {
+
+            throw new BusinessLogicException(
+                    "El motivo de la solicitud es obligatorio."
+            );
         }
     }
 
