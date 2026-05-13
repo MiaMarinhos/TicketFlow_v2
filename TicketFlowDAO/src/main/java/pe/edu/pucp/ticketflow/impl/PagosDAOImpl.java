@@ -110,6 +110,63 @@ public class PagosDAOImpl implements IPagosDAO {
         }
     }
 
+    @Override
+    public List<Pago> buscarPorUsuario(String nombre) {
+
+        List<Pago> lista = new ArrayList<>();
+
+        String sql = "{CALL sp_buscar_pago_usuario(?)}";
+
+        try (Connection con = DBManager.getInstance().getConnection();
+             CallableStatement cs = con.prepareCall(sql)) {
+
+            cs.setString(1, nombre);
+
+            try (ResultSet rs = cs.executeQuery()) {
+
+                while (rs.next()) {
+
+                    Pago t = new Pago();
+                    mapear(rs, t);
+                    lista.add(t);
+                }
+
+                return lista;
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Error al buscar pagos", e);
+        }
+    }
+
+    @Override
+    public List<Pago> filtrarPorEstado(Integer idEstado) {
+
+        List<Pago> lista = new ArrayList<>();
+
+        String sql = "{CALL sp_filtrar_pagos_estado(?)}";
+
+        try (Connection con = DBManager.getInstance().getConnection();
+             CallableStatement cs = con.prepareCall(sql)) {
+
+            cs.setInt(1, idEstado);
+
+            try (ResultSet rs = cs.executeQuery()) {
+
+                while (rs.next()) {
+                    Pago t = new Pago();
+                    mapear(rs, t);
+                    lista.add(t);
+                }
+
+                return lista;
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Error al filtrar pagos por estado", e);
+        }
+    }
+
     private void mapear(ResultSet rs, Pago t) throws SQLException{
         t.setIdPago(rs.getInt("idPagos"));
         t.setFechaPago(rs.getDate("fecha_pago").toLocalDate());

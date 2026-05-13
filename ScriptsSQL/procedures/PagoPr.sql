@@ -168,3 +168,43 @@ WHERE e.idAnfitrion = p_idAnfitrion;
 END$$
 
 DELIMITER ;
+
+-- Buscar Por Nombre
+DELIMITER $$
+
+CREATE PROCEDURE sp_buscar_pago_usuario(
+    IN p_nombre VARCHAR(45)
+)
+BEGIN
+
+SELECT
+    p.*,
+    u.nombre,
+    e.titulo
+FROM pagos p
+         INNER JOIN compra c
+                    ON p.idCompra = c.idCompra
+         INNER JOIN usuario u
+                    ON c.idUsuario = u.idUsuario
+         INNER JOIN evento e
+                    ON p.idEvento = e.idEvento
+WHERE u.nombre LIKE CONCAT('%', p_nombre, '%');
+
+END$$
+
+DELIMITER ;
+
+--Filtrar Por Estado
+DELIMITER $$
+
+CREATE PROCEDURE sp_filtrar_pagos_estado(
+    IN p_idEstado INT
+)
+BEGIN
+SELECT *
+FROM pagos
+WHERE idEstado = p_idEstado;
+END$$
+
+DELIMITER ;
+

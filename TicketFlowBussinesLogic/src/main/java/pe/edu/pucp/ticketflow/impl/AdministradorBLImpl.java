@@ -4,6 +4,7 @@ import pe.edu.pucp.ticketflow.*;
 import pe.edu.pucp.ticketflow.administrador.model.Administrador;
 import pe.edu.pucp.ticketflow.evento.model.Evento;
 import pe.edu.pucp.ticketflow.exception.BusinessLogicException;
+import pe.edu.pucp.ticketflow.pago.model.Pago;
 import pe.edu.pucp.ticketflow.solicitud.model.Solicitud;
 import pe.edu.pucp.ticketflow.usuario.model.Usuario;
 
@@ -15,12 +16,14 @@ public class AdministradorBLImpl implements IAdministradorBL {
     private final IUsuarioDAO usuarioDAO;
     private final IEventoDAO eventoDAO;
     private final ISolicitudesDAO solicitudesDAO;
+    private final IPagosDAO pagosDAO;
 
     public AdministradorBLImpl() {
         this.administradorDAO = new AdministradorDAOImpl();
         this.usuarioDAO = new UsuarioDAOImpl();
         this.eventoDAO = new EventoDAOImpl();
         this.solicitudesDAO = new SolicitudesDAOImpl();
+        this.pagosDAO = new PagosDAOImpl();
     }
 
     @Override
@@ -374,6 +377,48 @@ public class AdministradorBLImpl implements IAdministradorBL {
         }
 
         solicitudesDAO.delete(idSolicitud);
+    }
+
+    //Gestion de Pagos
+    @Override
+    public List<Pago> listarPagos() throws BusinessLogicException {
+        return pagosDAO.listAll();
+    }
+
+    @Override
+    public List<Pago> buscarPago(String nombre) throws BusinessLogicException {
+
+        if (nombre == null || nombre.trim().isEmpty()) {
+            return pagosDAO.listAll();
+        }
+
+        return pagosDAO.buscarPorUsuario(nombre.trim());
+    }
+
+    @Override
+    public List<Pago> filtrarPagosPorEstado(Integer idEstado) throws BusinessLogicException {
+
+        if (idEstado == null || idEstado == 0) {
+            return pagosDAO.listAll();
+        }
+
+        return pagosDAO.filtrarPorEstado(idEstado);
+    }
+
+    @Override
+    public Pago detallePago(Integer idPago) throws BusinessLogicException {
+
+        if (idPago == null || idPago <= 0) {
+            throw new BusinessLogicException("Debe seleccionar un pago válido.");
+        }
+
+        Pago pago = pagosDAO.read(idPago);
+
+        if (pago == null) {
+            throw new BusinessLogicException("No se encontró el pago seleccionado.");
+        }
+
+        return pago;
     }
 
 
