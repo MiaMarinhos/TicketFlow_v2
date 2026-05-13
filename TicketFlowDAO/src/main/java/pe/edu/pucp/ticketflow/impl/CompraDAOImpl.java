@@ -135,4 +135,31 @@ public class CompraDAOImpl implements ICompraDAO{
         t.setIdEvento(rs.getInt("idEvento"));
         t.setIdEstado(rs.getInt("idEstado"));
     }
+
+    public List<Compra> listarComprasPorAnfitrion(Integer idAnfitrion) {
+        List<Compra> lista = new ArrayList<>();
+        // El procedure debe hacer un JOIN entre tabla_compras y tabla_eventos
+        // donde el id_anfitrion coincida con el parámetro enviado.
+        String sql = "{CALL sp_listar_compras_por_anfitrion(?)}";
+
+        try (Connection con = DBManager.getInstance().getConnection();
+             CallableStatement cs = con.prepareCall(sql)) {
+
+            // Seteamos el ID del anfitrión que recibimos desde el BL
+            cs.setInt(1, idAnfitrion);
+
+            try (ResultSet rs = cs.executeQuery()) {
+                while(rs.next()){
+                    Compra t = new Compra();
+                    // Reutilizamos tu método mapear para llenar el objeto
+                    mapear(rs, t);
+                    lista.add(t);
+                }
+            }
+            return lista;
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Error en listar Compras por Anfitrión", e);
+        }
+    }
 }

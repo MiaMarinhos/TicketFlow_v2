@@ -103,6 +103,17 @@ FROM compras;
 END$$
 DELIMITER ;
 
+--Listar compras por anfitrion
+DELIMITER $$
+CREATE PROCEDURE sp_listar_compras_por_anfitrion(
+    IN p_idAnfitrion INT
+)
+BEGIN
+SELECT c.* FROM compra c
+                    INNER JOIN evento e ON c.idEvento = e.idEvento
+WHERE e.idAnfitrion = p_idAnfitrion;
+END$$
+DELIMITER ;
 
 -----------------------------------
 --ESTADO COMPRAS
@@ -172,3 +183,4 @@ SELECT
 FROM estado_compras;
 END$$
 DELIMITER ;
+

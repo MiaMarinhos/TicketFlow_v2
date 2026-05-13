@@ -1,6 +1,8 @@
 package pe.edu.pucp.ticketflow;
 
 import pe.edu.pucp.ticketflow.evento.model.Evento;
+import pe.edu.pucp.ticketflow.compra.model.Compra;
+import pe.edu.pucp.ticketflow.pago.model.Pago;
 import pe.edu.pucp.ticketflow.exception.BusinessLogicException;
 import pe.edu.pucp.ticketflow.usuario.model.Anfitrion;
 
@@ -29,9 +31,9 @@ public interface IAnfitrionBL extends IUsuarioBL{
 
     void editarPerfilAnfitrion() throws BusinessLogicException;
 
-    void verComprasDeSusEventos() throws BusinessLogicException;
+    List<Compra> verComprasDeSusEventos(Integer idAnfitrion) throws BusinessLogicException;
 
-    void verPagosDeSusEventos() throws BusinessLogicException;
+    List<Pago> verPagosDeSusEventos(Integer idAnfitrion) throws BusinessLogicException ;
 
     void salirModoAnfitrion() throws BusinessLogicException;
 

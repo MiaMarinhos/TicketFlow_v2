@@ -153,3 +153,18 @@ SELECT
 FROM pagos;
 END$$
 DELIMITER ;
+
+--Listar pagos por anfitrion
+DELIMITER $$
+
+CREATE PROCEDURE sp_listar_pagos_por_anfitrion(
+    IN p_idAnfitrion INT
+)
+BEGIN
+    -- Seleccionamos todos los campos de pago y hacemos join con evento
+SELECT p.* FROM pagos p
+                    INNER JOIN evento e ON p.idEvento = e.idEvento
+WHERE e.idAnfitrion = p_idAnfitrion;
+END$$
+
+DELIMITER ;

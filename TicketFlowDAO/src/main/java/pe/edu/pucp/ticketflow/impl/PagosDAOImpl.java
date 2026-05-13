@@ -119,4 +119,30 @@ public class PagosDAOImpl implements IPagosDAO {
         t.setIdEvento(rs.getInt("idEvento"));
         t.setIdEstado(rs.getInt("idEstado"));
     }
+
+    @Override
+    public List<Pago> listarPagosPorAnfitrion(Integer idAnfitrion) {
+        List<Pago> lista = new ArrayList<>();
+        String sql = "{CALL sp_listar_pagos_por_anfitrion(?)}";
+
+        try (Connection con = DBManager.getInstance().getConnection();
+             CallableStatement cs = con.prepareCall(sql)) {
+
+            // Asignamos el ID del anfitrión al primer parámetro del procedure
+            cs.setInt(1, idAnfitrion);
+
+            try (ResultSet rs = cs.executeQuery()) {
+                while(rs.next()){
+                    Pago t = new Pago();
+                    // Reutilizamos tu método mapear para llenar los datos
+                    mapear(rs, t);
+                    lista.add(t);
+                }
+            }
+            return lista;
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Error en listar Pagos por Anfitrión", e);
+        }
+    }
 }

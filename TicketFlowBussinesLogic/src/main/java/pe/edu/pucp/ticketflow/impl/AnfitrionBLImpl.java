@@ -2,6 +2,8 @@ package pe.edu.pucp.ticketflow.impl;
 
 import pe.edu.pucp.ticketflow.IAnfitrionBL;
 import pe.edu.pucp.ticketflow.evento.model.Evento;
+import pe.edu.pucp.ticketflow.compra.model.Compra;
+import pe.edu.pucp.ticketflow.pago.model.Pago;
 import pe.edu.pucp.ticketflow.exception.BusinessLogicException;
 import pe.edu.pucp.ticketflow.usuario.model.Anfitrion;
 
@@ -12,9 +14,14 @@ public class AnfitrionBLImpl extends UsuarioBLImpl implements IAnfitrionBL {
     private final AnfitrionDAOImpl anfitrionDAO;
     private final EventoDAOImpl eventoDAO;
 
+    private final CompraDAOImpl compraDAO;
+    private final PagosDAOImpl pagoDAO;
+
     public AnfitrionBLImpl() {
         this.anfitrionDAO = new AnfitrionDAOImpl();
         this.eventoDAO = new EventoDAOImpl();
+        this.compraDAO = new CompraDAOImpl();
+        this.pagoDAO = new PagosDAOImpl();
     }
 
     @Override
@@ -217,13 +224,29 @@ public class AnfitrionBLImpl extends UsuarioBLImpl implements IAnfitrionBL {
     }
 
     @Override
-    public void verComprasDeSusEventos() throws BusinessLogicException {
-        System.out.println("Anfitrión está visualizando las compras de sus eventos.");
+    public List<Compra> verComprasDeSusEventos(Integer idAnfitrion) throws BusinessLogicException {
+        try {
+            if (idAnfitrion == null || idAnfitrion <= 0) {
+                throw new BusinessLogicException("El ID del anfitrión debe ser válido.");
+            }
+            // Aquí llamas al DAO que a su vez ejecutará el CallableStatement (Procedure con el JOIN)
+            return compraDAO.listarComprasPorAnfitrion(idAnfitrion);
+        } catch (Exception e) {
+            throw new BusinessLogicException("Error al visualizar las compras: " + e.getMessage());
+        }
     }
 
     @Override
-    public void verPagosDeSusEventos() throws BusinessLogicException {
-        System.out.println("Anfitrión está visualizando los pagos de sus eventos.");
+    public List<Pago> verPagosDeSusEventos(Integer idAnfitrion) throws BusinessLogicException {
+        try {
+            if (idAnfitrion == null || idAnfitrion <= 0) {
+                throw new BusinessLogicException("El ID del anfitrión debe ser válido.");
+            }
+            // Llamas al DAO correspondiente
+            return pagoDAO.listarPagosPorAnfitrion(idAnfitrion);
+        } catch (Exception e) {
+            throw new BusinessLogicException("Error al visualizar los pagos: " + e.getMessage());
+        }
     }
 
     @Override
